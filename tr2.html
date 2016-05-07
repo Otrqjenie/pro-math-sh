@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="text/javascript">
+	function obj(id){
+		return document.getElementById(id);
+	}
+	game = {};
+	game.FPS = 35;
+	game.Clr = function () { obj('Scene').innerHTML = '';
+		// body...
+	};
+	game.Add = function (id, x, y, h, w, color) {
+		obj('Scene').innerHTML += '<div id = '+id+' style = "position: fixed; left: '+x+'px; top: '+y+'px; height:'+h+'px; width: '+w+'px; background-color: '+color+';"></div>';
+	};
+	game.Pause  = function  (ms) {
+		alert('Пауза');
+	}
+	keys = {};
+	keys.up = 87; keys.righht = 68;
+	keys.down = 83; keys.lefte = 65;
+	var Code = 0;
+	keys.KeyControl = function () {
+		game.Engine();
+		setTimeout(function(){keys.KeyControl();}, game.FPS);
+	};
+	function move (id, x, y) {
+		var o = obj(id);
+		x = parseInt(x);
+		y = parseInt(y);
+		o.style.left = parseInt(o.style.left)+x+'px';
+		o.style.top = parseInt(o.style.top)+y+'px';
+	}
+	game.Engine = function () {//Движок игры
+		obj('keyCode').innerHTML = Code;
+		if (Code == keys.righht) {
+			move('me', 5, 0);
+		}
+		if (Code == keys.lefte) {
+			move('me', -5, 0);
+		}
+		if (Code == keys.up) {
+			move('me', 0, -5);
+		}
+		if (Code == keys.down) {
+			move('me', 0, 5);
+		}
+	};
+</script>
+<title>Игра</title>
+<meta http-equiv="Content-Type" content="text/html;" charset = "utf-8" >
+</head>
+<body id = "Scene" onkeydown = "Code = event.keyCode;" onkeyup="Code=0">
+<script>
+game.Clr();
+game.Add('me', 5, 5, 50, 50, 'rgb(150, 150, 150)');
+game.Add('stena', 150, 150, 50, 50, 'rgb(150, 150, 150)');
+game.Add('keyCode', 150, 0, 50, 50, 'red');
+keys.KeyControl();
+</script>
+</body>
+</html>

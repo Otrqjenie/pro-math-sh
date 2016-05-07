@@ -1,0 +1,219 @@
+<?php
+require_once "connect2.php";
+require_once "lib/request.php";
+session_start();
+header("Content-Type: text/html; charset=utf-8");
+
+if (!isset($_COOKIE['id']) and !isset($_COOKIE['hesh'])) {
+	Header("Location: game_js_register.php");
+};
+if (!isset($_SESSION['id']) and !isset($_SESSION['hesh'])) {//Обработчик регистрации
+	//print_r($_COOKIE);
+	//Работаем здесь
+	$m = 'SELECT * FROM user WHERE id = ?';
+	$r = mysql_qw($m, $_COOKIE['id']) or die(mysql_error());
+	$row = mysql_fetch_assoc($r);
+	$_SESSION['id'] = $row['id'];
+    $_SESSION['hesh'] = $row['hesh'];
+    $_SESSION['imya'] = $row['imya'];
+    $_SESSION['familiya'] = $row['familiya'];
+    $m = "UPDATE user SET activity = ".time()." WHERE id = ?".
+	mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+};
+// Проверка наличия текущего боя
+$m = 'SELECT * FROM fight WHERE status = 2';
+$r = mysql_qw($m);
+$enemy = null;
+$i = 0;
+for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row ){
+	if ($row['id_priglos'] == $_SESSION['id']) {
+		$enemy = $row['id_prigloshaemogo'];
+		$i++;
+	}
+	elseif ($row['id_prigloshaemogo'] == $_SESSION['id']) {
+		$enemy = $row['id_priglos'];
+		$i++;
+	};
+	
+};
+if ($i == 0) {
+	$_SESSION['fighter'] = null;;
+	$_SESSION['enemy_shield'] = null;;
+};
+$_SESSION['enemy'] = $enemy;
+$_SESSION['id_fight'] = $row['id_fight'];//Создаём id текущего боя
+//Обработчик принятия приглашений
+if (isset($_REQUEST['go_fight']) and (!isset($_SESSION['enemy']))) {
+	if ($_REQUEST['go_fight'] == 1) {
+		$_SESSION['go_fight'] = 1;
+		$enemy = $_REQUEST['go_fight_id'];
+		$m = 'UPDATE fight SET status = ?, time_begin = ? WHERE id_prigloshaemogo = ? 
+		and id_priglos = ?';
+		mysql_qw($m, 2, time(), $_SESSION['id'], $enemy) or die(mysql_error());
+		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
+  		exit();
+	}
+	else{
+		$enemy = $_REQUEST['go_fight_id'];
+		$m = 'DELETE FROM fight WHERE id_priglos = ? and id_prigloshaemogo = ?';
+		mysql_qw($m, $enemy, $_SESSION['id']) or die(mysql_error());
+		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
+  		exit();
+	};
+}
+elseif ($_REQUEST['go_fight'] ==2) {
+	$enemy = $_REQUEST['go_fight_id'];
+	$m = 'DELETE FROM fight WHERE id_priglos = ? and id_prigloshaemogo = ?';
+	mysql_qw($m, $enemy, $_SESSION['id']) or die(mysql_error());
+	Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
+  	exit();
+};
+//Поиск приглашений
+$m = 'SELECT * FROM fight WHERE status = 1';
+$r = mysql_qw($m) or die(mysql_error());
+$priglos = array();
+$i = 0;
+for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row ){
+	if ($row['id_prigloshaemogo'] == $_SESSION['id']) {
+		$priglos[] = $row;
+		$i++;
+	}
+	elseif ($row['id_priglos'] == $_SESSION['id']) {
+		$priglos[] = $row;
+		$i++;
+	}
+};
+if ($i > 0 ) {
+	$_SESSION['priglos'] = $priglos;
+}
+else{
+	$_SESSION['priglos'] = null;
+};
+//Обработчик ответов
+if (isset($_GET['otvet'])) {
+	$e = $_GET['e'];
+	$m = 'SELECT * FROM zadania WHERE id =?';
+	$r = mysql_qw($m, $_SESSION['enemy_shield']) or die(mysql_error());
+	$row = mysql_fetch_assoc($r);
+	if ($row[otvet] == $e['otvet']) {
+		mysql_qw('DELETE FROM shield WHERE id_user = ? and id_zsh = ?', $_SESSION['enemy'], $_SESSION['enemy_shield']) or die(mysql_error());
+	}
+	else "неверно";
+}
+
+?>
+<div align  = "center">
+<table width = "1200" border  = "1">
+	<tr>
+		<td><a href = "game_js.php">Моя страница</a></td>
+		<td><a href="game_js_online.php">Игроки онлайн</a></td>
+		<td>Текущий бой</td>
+		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
+	</tr>
+</table>
+</div>
+<div align  = "center">
+<table width = "1200" border  = "1">
+	<tr>
+		<td><?=$_SESSION['imya']?>&nbsp;<?=$_SESSION['familiya']?></td>
+	</tr>
+	<tr>
+		<td width = "30%" valign = "top">
+			<p>Щит</p>
+			<p>
+				<?
+					$m = 'SELECT * FROM shield WHERE id_user = ? ORDER BY id_zsh';
+					$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+					for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row) { 
+					echo "<p><a href = ".$_SESSION['SCRIPT_NAME']."?shield=".$row['id_zsh']."&nazvanie_zsh=".$row['nazvanie_zsh'].">".$row['nazvanie_zsh']."</a></p>";	
+					};
+
+				?>
+			</p>
+
+			<p>Арсенал</p>
+			<p>
+				<?
+					$m = 'SELECT * FROM arsenal WHERE id_user = ? ORDER BY id_rz';
+					$r = mysql_qw($m, $_SESSION['id']);
+					for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row) { 
+						echo "<p><a href = ".$_SESSION['SCRIPT_NAME']."?shield=".$row['id_rz'].">".$row['nazvanie']."</a></p>";	
+					};
+				?>
+			</p>
+		</td>
+		<td width = "40%" valign = "top" >
+			<?
+			if (isset($_REQUEST['enemy_shield'])) {
+				$_SESSION['enemy_shield'] = $_REQUEST['enemy_shield'];
+			}
+			
+			// Провеяем принятость приглашений
+			if (isset($_SESSION['enemy'])) {
+				$i = 0;
+				$m = 'SELECT * FROM shield WHERE id_user = ? ORDER BY id_zsh';
+				$r = mysql_qw($m, $_SESSION['enemy']) or die(mysql_error());
+				for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row) { 
+					echo "<p><a href = ".$_SERVER['SCRIPT_NAME']."?enemy_shield=".$row['id_zsh'].">".$row['nazvanie_zsh'].
+					"</a></p>";	
+					$i++;
+				};
+				if ($i > 0) {
+					
+				
+				$r = mysql_qw('SELECT * FROM zadania WHERE id = ?', $_SESSION['enemy_shield']) or die(mysql_error());
+            	$row = mysql_fetch_assoc($r);
+            	
+            	$m1 = "<p>".$row['nazvanie']."Название</p><p>".$row['soderjanie']."</p>";
+            	$m2 = "<form method = 'get'>
+            	    <input type = 'text' name = 'e[otvet]'></br>
+            	    <input type = 'submit' name = 'otvet' value='Ответить'></br>
+            	</form>
+            	";
+            	if (isset($row['img'])) {           
+            	$m3 = "<p><img src = 'imag/".$row['img']."'></p>";
+            	$m4 = $m1.$m3.$m2;
+            	echo $m4;
+            	}
+				else {echo "Выберите задание выше.";};
+
+				};
+			if ($i == 0) {
+				$m = 'UPDATE fight SET (status = 3, id_vin = ?) WHERE ';
+				echo "Вы победили!!!";
+			};
+
+			};
+			
+			?>
+			
+		</td>
+		<td width = "30%" valign = "top">
+			<p>Список приглашений</p>
+			<?
+			
+			//$_SESSION['priglos'] = null;
+
+			if ($_SESSION['priglos'] != null) {
+				foreach ($_SESSION['priglos'] as $key => $value) {					
+					echo "</br>";
+					if (($value['id_priglos'] == $_SESSION['id']) and ($value['status'] == 1)) {
+						$m = 'SELECT * FROM user WHERE id = ?';
+						$r = mysql_qw($m, $value['id_prigloshaemogo']) or die(mysql_error());
+						$row = mysql_fetch_assoc($r);
+						echo "Вы пригласили игрока: ".$row['imya']." ".$row['familiya']."</br>" ;
+					}
+					elseif (($value['id_prigloshaemogo'] == $_SESSION['id']) and ($value['status'] == 1)) {
+						$m = 'SELECT * FROM user WHERE id = ?';
+						$r = mysql_qw($m, $value['id_priglos']) or die(mysql_error());
+						$row = mysql_fetch_assoc($r);
+						echo "Вас пригласил игрок : ".$row['imya']." ".$row['familiya']."<a href = ".$_SERVER['SCRIPT_NAME']."?go_fight=1&go_fight_id=".$row['id']."> Принять</a>
+						<a href = ".$_SERVER['SCRIPT_NAME']."?go_fight=2&go_fight_id=".$row['id']."> Отклонить</a></br>" ;
+					};
+				};
+			};
+			?>
+		</td>
+	</tr>
+</table>
+</div>

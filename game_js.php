@@ -1,12 +1,9 @@
 <?php
 require_once "connect2.php";
 require_once "lib/request.php";
-session_start();
-header("Content-Type: text/html; charset=utf-8");
 
-if (!isset($_COOKIE['id']) and !isset($_COOKIE['hesh'])) {
-	Header("Location: game_js_register.php");
-};
+
+
 if (!isset($_SESSION['id']) and !isset($_SESSION['hesh'])) {
 	//print_r($_COOKIE);
 	//Работаем здесь
@@ -151,17 +148,7 @@ if (isset($_REQUEST['del'])) {
 	<link rel="stylesheet" type="text/css" href="css/game_js.css">
 </head>
 <body>
-<div align  = "center">
-<table width = "1200" border  = "1">
-	<tr>
-		<td>Моя страница</td>
-		<td><a href="game_js_online.php">Игроки онлайн</a></td>
-		<td><a href="game_js_invitation.php">Приглашения</a></td>
-		<td><a href = "tr_js.php">Текущий бой</a></td>
-		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
-	</tr>
-</table>
-</div>
+
 <div align  = "center">
 <table width = "1200" border  = "1">
 	<tr>

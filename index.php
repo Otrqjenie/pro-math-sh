@@ -1,9 +1,13 @@
 <?php
+header("Content-Type: text/html; charset=utf-8");
 define("proverka", 84);
 require_once "connect2.php";
 require_once "lib/request.php";
+if (!isset($_COOKIE['id']) and !isset($_COOKIE['hesh'])) {
+	Header("Location: game_js_register.php");
+};
 session_start();
-header("Content-Type: text/html; charset=utf-8");
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,14 +22,22 @@ header("Content-Type: text/html; charset=utf-8");
 <div align  = "center">
 <table width = "1200" border  = "1">
 	<tr>
-		<td>Моя страница</td>
-		<td><a href="index.php">Игроки онлайн</a></td>
+		<td><a href="index.php?site=game_js.php">Моя страница</a></td>
+		<td>Игроки онлайн</td>
 		<td><a href="index.php">Приглашения</a></td>
 		<td><a href = "index.php">Текущий бой</a></td>
 		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
 	</tr>
 </table>
 </div>
+<?
+
+if (isset($_GET["site"])) {
+	$site = $_GET["site"];
+	require_once $site;
+};
+
+?>
 
 </body>
 </html>

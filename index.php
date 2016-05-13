@@ -22,21 +22,43 @@ session_start();
 <div align  = "center">
 <table width = "1200" border  = "1">
 	<tr>
-		<td><a href="index.php?site=game_js.php">Моя страница</a></td>
-		<td>Игроки онлайн</td>
-		<td><a href="index.php">Приглашения</a></td>
-		<td><a href = "index.php">Текущий бой</a></td>
+		<td><a href="index.php?site=game_js">Моя страница</a></td>
+		<td><a href="index.php?site=game_js_online">Игроки онлайн</a></td>
+		<td><a href="index.php?site=game_js_invitation">Приглашения</a></td>
+		<td><a href = "index.php?site=tr_js">Текущий бой</a></td>
 		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
 	</tr>
 </table>
 </div>
 <?
-
-if (isset($_GET["site"])) {
-	$site = $_GET["site"];
-	require_once $site;
+if (isset($_REQUEST['out'])) {
+	setcookie('id');
+	setcookie('hesh');
+	session_destroy();
+	Header("Location: game_js_register.php");
 };
-
+if (isset($_GET["site"])) {
+	switch ($_GET["site"]) {
+		case 'game_js':
+			$site = $_GET["site"];
+			break;
+		case 'game_js_online':
+			$site = $_GET["site"];
+			break;
+		case 'game_js_invitation':
+			$site = $_GET["site"];
+			break;
+		case 'tr_js':
+			$site = $_GET["site"];
+			break;
+		
+		default:
+			$site = "game_js";
+			break;
+	};
+	
+};
+require_once  $site.'.php';
 ?>
 
 </body>

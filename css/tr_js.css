@@ -1,5 +1,6 @@
 #shield{
-			background-color: #708090;
+			/*background-color: #708090;*/
+			background-image: url(path4145.png);
 			height: 250px;
 			left: 50px;
 			position: absolute;
@@ -9,7 +10,7 @@
 			cursor: pointer;
 		}
 #shield2{
-			background-color: #708090;
+			background-image: url(path4145.png);
 			height: 250px;
 			left: 1120px;
 			position: absolute;

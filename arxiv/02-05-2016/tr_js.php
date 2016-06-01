@@ -145,7 +145,7 @@ if (isset($_GET['otvet'])) {
 		<td><a href = "game_js.php">Моя страница</a></td>
 		<td><a href="game_js_online.php">Игроки онлайн</a></td>
 		<td><a href="game_js_invitation.php">Приглашения</a></td>
-		<td>Текущий бой</td>
+		<td><a href = "tr_js.php">Текущий бой</a></td>
 		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
 	</tr>
 </table>

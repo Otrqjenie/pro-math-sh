@@ -7,3 +7,105 @@
   	background-color: #191970;
 
 }
+.my_sh {
+	color: #8470FF;
+	cursor: pointer;
+}
+.my_sh2 {
+	color: #CD5C5C;
+	cursor: pointer;
+}
+#imya{
+	position: absolute;
+	top: 50px;
+	left: 40px;
+	width: 290px;
+	height: 50px;
+	background-color: #DCDCDC;
+}
+#shield_cont{
+	position: absolute;
+	top: 100px;
+	left: 50px;
+	width: 270px;
+	height: 250px;
+	background-color: #DCDCDC;
+}
+#arsenal{
+	position: absolute;
+	top: 390px;
+	left: 50px;
+	width: 270px;
+	height: 200px;
+	background-color: #DCDCDC;
+}
+#baza{
+	position: absolute;
+	top: 100px;
+	left: 900px;
+	width: 270px;
+	height: 250px;
+	background-color: #DCDCDC;
+}
+#text_z{
+	position: absolute;
+	top: 100px;
+	left: 370px;
+	width: 480px;
+	height: 400px;
+	background-color: #DCDCDC;
+}
+.tab{
+	/*position: absolute;*/
+	width: 70px;
+	height: 50px;
+	color: #696969;
+	/*text-decoration-color: #9370DB;*/
+	text-align: center;
+	/*vertical-align: middle; не работает*/
+	/*margin: 0px 5px 5px 5px;*/
+	float: left;
+	background-color: #DCDCDC;
+	/*padding-top: 10px;*/
+	cursor: pointer;
+	position: absolute;
+
+}
+#oge{
+	top: 0px;
+	left: 0px;
+}
+#ege{
+	top: 0px;
+	left: 80px;
+}
+#sh_f{
+	top: 0px;
+	left: 160px;
+}
+#U_f{
+	top: 0px;
+	left: 240px;
+}
+#tab{
+	width: 320px;
+	height: 70px;
+	/*margin: 0 auto;*/
+	color: black;
+	position: absolute;
+	top: 50px;
+	left: 445px;
+
+}
+#sh1{
+	/*display: none;*/
+}
+#sh2{
+	display: none;
+}
+#sh3{
+	display: none;
+}
+#sh4{
+	display: none;
+}

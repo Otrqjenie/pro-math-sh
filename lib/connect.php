@@ -1,10 +1,9 @@
-<?php
-$user="root";
-$pass="";
-$db="spoon";
-mysql_connect("localhost", $user, $pass)
- or die("Error".misql_error());
-@mysql_query("CREATE DATABASE $db");
-mysql_select_db($db)
- or die("coold not select db".mysql_error());
+<?php 
+if (!defined('proverka')) {
+	die();
+};
+$db = new mysqli('localhost', 'ww', 'eQfL6QsZudbW6jOj', 'db');
+if ($db->connect_errno) {
+	die('Sorry, we having some problems.');	
+};
 ?>

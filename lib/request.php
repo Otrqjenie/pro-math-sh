@@ -1,4 +1,7 @@
 <?php
+if (!defined('proverka')) {
+	die();
+};
 function mysql_qw(){
  $args = func_get_args();
  $conn = null;

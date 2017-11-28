@@ -1,12 +1,10 @@
 <?php
+if (!defined('proverka')) {
+	die();
+};
 	require_once "connect2.php";
 	require_once "lib/request.php";
-	session_start();
-	header("Content-Type: text/html; charset=utf-8");
-
-	if (!isset($_COOKIE['id']) and !isset($_COOKIE['hesh'])) {
-		Header("Location: game_js_register.php");
-	};
+	
 	if (!isset($_SESSION['id']) and !isset($_SESSION['hesh'])) {//Обработчик регистрации
 		//print_r($_COOKIE);
 		//Работаем здесь
@@ -30,17 +28,7 @@
 	<link rel="stylesheet" type="text/css" href="css/game_js_invitation.css">
 </head>
 <body>
-<div align  = "center">
-<table width = "1200" border  = "1">
-	<tr>
-		<td><a href = "game_js.php">Моя страница</a></td>
-		<td><a href="game_js_online.php">Игроки онлайн</a></td>
-		<td><a href="game_js_invitation.php">Приглашения</a></td>
-		<td><a href="tr_js.php">Текущий бой</a></td>
-		<td><a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a></td>
-	</tr>
-</table>
-</div>
+
 <div id = "conteiner" align = "center">
 <?
 
@@ -80,7 +68,7 @@
 				$r = mysql_qw($m, $value['id_priglos']) or die(mysql_error());
 				$row = mysql_fetch_assoc($r);
 				echo "Вас пригласил игрок : ".$row['imya']." ".$row['familiya']."<a href = tr_js.php?go_fight=1&go_fight_id=".$row['id']."> Принять</a>
-				<a href = tr_js.php?go_fight=2&go_fight_id=".$row['id']."> Отклонить</a></br>" ;
+				<a href = tr_js.php?go_fight=2&go_fight_id=".$row['id']."> Отклонить</a><br>" ;
 			};
 		};
 	};

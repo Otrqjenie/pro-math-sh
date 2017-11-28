@@ -1,288 +1,219 @@
 <?php
-require_once "connect2.php";
-require_once "lib/request.php";
-
-
-
-if (!isset($_SESSION['id']) and !isset($_SESSION['hesh'])) {
-	//print_r($_COOKIE);
-	//Работаем здесь
-	$m = 'SELECT * FROM user WHERE id = ?';
-	$r = mysql_qw($m, $_COOKIE['id']) or die(mysql_error());
-	$row = mysql_fetch_assoc($r);
-	$_SESSION['id'] = $row['id'];
-    $_SESSION['hesh'] = $row['hesh'];
-    $_SESSION['imya'] = $row['imya'];
-    $_SESSION['familiya'] = $row['familiya'];
-    $m = "UPDATE user SET activity = ".time()." WHERE id = ?";
-	mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+if (!defined('proverka')) {
+	die();
 };
-$max = 6;
-// Проверка готовности к бою проверяется при каждой загрузке
-if ($_REQUEST['ready'] == 1) {
-	$m = 'SELECT * FROM shield WHERE id_user = ?';
-	$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-	$i = 0;
-	for ($data = array(); $row = mysql_fetch_assoc($r) ; $data[] = $row ) { 
-		$i++;
-	};
-	if ($i > 0) {
-	$m = "UPDATE user_param SET readiness = 1 WHERE id = ?";
-	mysql_qw($m, $_SESSION['id']) or die(mysql_error());	
-	};
-	
-
-}
-elseif($_REQUEST['ready'] == 0){
-	$m = "UPDATE user_param SET readiness = 0 WHERE id = ?";
-	mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-};
-$m = "SELECT readiness FROM user_param WHERE id = ?";
-$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-$row = mysql_fetch_assoc($r);
-$_SESSION['readiness'] = $row['readiness'];
-// -----------------------------------------------------
-	if (!isset($_SESSION['myarsenal'])) {
-		$m = 'SELECT * FROM arsenal WHERE id_user = ?';
-		$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-		for ( $data = array(); $row = mysql_fetch_assoc($r) ; $_SESSION['myarsenal'][] = $row) { 
-			# code...
-		}
-	};
-	$m = "UPDATE user SET activity = ".time()." WHERE id = ?";
-	mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-//выход
-if (isset($_REQUEST['out'])) {
-	setcookie('id');
-	setcookie('hesh');
-	session_destroy();
-	Header("Location: game_js_register.php");
-};
-//Проверка ответа
-if (isset($_GET['otvet'])) {
-	$e = $_GET['e'];
-	$m = 'SELECT * FROM zadania WHERE id = ?';
-	$r = mysql_qw($m, $_SESSION['id_z']) or die(mysql_error());
-	$row = mysql_fetch_assoc($r);
-	if ($e['otvet'] == $row['otvet']) {
-		$_SESSION['nazvanie'] = $row['nazvanie'];
-		$m = 'SELECT * FROM arsenal WHERE id_rz = ? and id_user = ?';
-		$r = mysql_qw($m, $_SESSION['id_z'], $_SESSION['id']);
-		$i = 0;
-		for ($data = array(); $row = mysql_fetch_assoc($r) ; $i++); 
-		if ($i == 0) {
-    	$m = 'INSERT INTO arsenal SET 
-			id_user = ?,
-			id_rz = ?,
-			nazvanie = ?
-		';
-		mysql_qw($m, $_SESSION['id'], $_SESSION['id_z'], $_SESSION['nazvanie']) or die(mysql_error());
-		};		
-		
-		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-  		exit();
-	}
-	else{
-		echo "Неправильно";
-	};
-};
-if (isset($_REQUEST['shield'])) {
-	// доработать запретить добавление в бою
-	$m = 'SELECT COUNT(*) FROM fight WHERE status = 2 and (id_priglos = ? or id_prigloshaemogo = ?)';
-	$r = mysql_qw($m, $_SESSION['id'], $_SESSION['id']) or die(mysql_error());
-	$row = mysql_fetch_assoc($r);
-	if ($row['COUNT(*)'] > 0) {
-		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-	  	exit();
-	};	
-	// ---
-	$shield = $_REQUEST['shield'];
-	$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ? and id_zsh = ?';
-	$r = mysql_qw($m, $_SESSION['id'], $shield);
-	$row = mysql_fetch_assoc($r);
-	// Проверка наличия данного задания
-	if ($row['COUNT(*)'] > 0) {
-		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-  		exit();
-	};
-	// Проверка колшчества заданий
-	$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ?';
-	$r = mysql_qw($m, $_SESSION['id']);
-	$row = mysql_fetch_assoc($r);
-	if ($row['COUNT(*)'] >= $max) {
-		Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-	  	exit();
-	};
-
-	$m = 'SELECT nazvanie FROM arsenal WHERE 
-		id_user = ? and id_rz = ?
-	';
-	$r = mysql_qw($m, $_SESSION['id'], $shield) or die(mysql_error());
-	$row = mysql_fetch_assoc($r) or die(mysql_error());
-	$m = 'INSERT INTO shield SET 
-		id_zsh = ?,
-		nazvanie_zsh = ?,
-		id_user = ?
-	';
-	mysql_qw($m, $shield, $row['nazvanie'], $_SESSION['id']) or die(mysql_error());
-	
-	Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-  	exit();
-}
-//обработчик удаления из щита
-if (isset($_REQUEST['del'])) {
-	$del = $_REQUEST['del'];
-	$m = 'DELETE FROM shield WHERE id_zsh = ? and id_user = ?';
-	mysql_qw($m, $del, $_SESSION['id']) or die(mysql_error());
-	Header("Location:{$_SERVER['SCRIPT_NAME']}?".time());
-  	exit();
-}
+// require_once "connect2.php";
+// require_once "lib/request.php";
 ?>
+<div id="tab">
+	<div id="oge" class="tab" <? if ($_SESSION['razdel'] == "oge") {
+		echo "style='background-color:red'";
+	}; ?>>
+		<p>ОГЭ</p>
+	</div>
 
-<html>
-<head>
-	<title>Моя страница</title>
-	<script type="text/javascript" src = "lib/jquery-2.2.0.js"></script>
-	<script type="text/javascript" src = "game_js.js"></script>
-	<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-	<link rel="stylesheet" type="text/css" href="css/game_js.css">
-</head>
-<body>
-
-<div align  = "center">
-<table width = "1200" border  = "1">
-	<tr>
-		<td><?=$_SESSION['imya']?>&nbsp;<?=$_SESSION['familiya']?><a href="<?=$_SERVER['SCRIPT_NAME']?>?statist=1">(Статистика)</a></td>
-	</tr>
-	<tr>
-		<td width = "30%" valign = "top">
-			<p>Щит</p>
-			<p>
-				<?
-					$m = 'SELECT * FROM shield WHERE id_user = ? ORDER BY id_zsh';
-					$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-					for ($data = array(); $row = mysql_fetch_assoc($r); $data[] = $row) { 
-					echo "<p><a href = ".$_SERVER['SCRIPT_NAME']."?shield=".$row['id_zsh']."&nazvanie_zsh=".$row['nazvanie_zsh'].">".$row['nazvanie_zsh'].
-					"</a><a href = ".$_SERVER['SCRIPT_NAME']."?del=".$row['id_zsh'].">(удалить)</a></p>";	
-					};
-					if ($_SESSION['readiness'] == 1) {
-						echo "<p><a href = ".$_SERVER['SCRIPT_NAME']."?ready=0>Не готов</a></p>";	
-					}
-					else{
-						echo "<p><a href = ".$_SERVER['SCRIPT_NAME']."?ready=1>Готов</a></p>";
-					}
-
-
-					
-				?>
-			</p>
-
-			<p>Арсенал</p>
-			<select name = "type2">
-				<option>Выберите тип задачи</option>
-				<option value = "Числа_и_вычисления">Числа_и_вычисления</option>
-				<option value = "Алгебраические_выражения">Алгебраические_выражения</option>
-				<option value = "Уравнения_и_неравенства">Уравнения_и_неравенства</option>
-				<option value = "Числовые_последовательности">Числовые_последовательности</option>
-				<option value = "Функции">Функции</option>
-				<option value = "Координаты_на_прямой_и_плоскости">Координаты_на_прямой_и_плоскости</option>
-				<option value = "Геометрия">Геометрия</option>
-				<option value = "Статистика_и_теория_вероятности">Статистика_и_теория_вероятности</option>
-				
-			</select>
-			<div id="list2"></div>
-			
-		</td>
-		<td width = "40%" valign = "top" >
-			
-			
-			
-			<?
-			if (isset($_REQUEST['statist'])) {
-				$m = 'SELECT * FROM arsenal WHERE id_user = ?';
-				$r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-				$a = array();
-				for ($data = array(); $row = mysql_fetch_assoc($r) ; $data[] = $row ) { 
-					
-					if ($row['tip'] == "Числа_и_вычисления") {
-						$a['Числа_и_вычисления'] = $a['Числа_и_вычисления'] +1 ;
-					}
-					elseif ($row['tip'] == "Алгебраические_выражения") {
-						$a['Алгебраические_выражения'] = $a['Алгебраические_выражения'] + 1;
-					}
-					elseif ($row['tip'] == "Уравнения_и_неравенства") {
-						$a['Уравнения_и_неравенства'] = $a['Уравнения_и_неравенства'] +1;
-					}
-					elseif ($row['tip'] == "Числовые_последовательности") {
-						$a['Числовые_последовательности'] = $a['Числовые_последовательности'] +1;
-					}
-					elseif ($row['tip'] == "Функции") {
-						$a['Функции'] = $a['Функции'] + 1;
-					}
-					elseif ($row['tip'] == "Координаты_на_прямой_и_плоскости") {
-						$a['Координаты_на_прямой_и_плоскости'] = $a['Координаты_на_прямой_и_плоскости'] + 1;
-					}
-					elseif ($row['tip'] == "Геометрия") {
-						$a['Геометрия'] = $a['Геометрия'] + 1;
-					}
-					else{
-						$a['Статистика_и_теория_вероятности'] = $a['Статистика_и_теория_вероятности'] + 1;
-					};
-				}
-				
-				foreach ($a as $key => $value) {
-					$str .= $key.": ".$value."</br>";
-				};
-				echo $str;
-			}
-			else{
-				if (isset($_REQUEST['id_z'])) {
-					
-					 
-					$_SESSION['id_z'] = $_GET['id_z'];
-				};
-				$m = 'SELECT nazvanie FROM zadania WHERE id = ?';
-				$r = mysql_qw('SELECT * FROM zadania WHERE id = ?', $_SESSION['id_z']) or die(mysql_error());
-				$row = mysql_fetch_assoc($r);
-				
-				$m1 = "<p>Задание: ".$row['nazvanie']."</p><p>".$row['soderjanie']."</p>";
-				$m2 = "<form method = 'get'>
-					<input type = 'text' name = 'e[otvet]'></br>
-					<input type = 'submit' name = 'otvet' value='Ответить'></br>
-				</form>
-				";
-				if (isset($row['img'])) {			
-				$m3 = "<p><img src = 'imag/".$row['img']."'></p>";
-				$m4 = $m1.$m3.$m2;
-				echo $m4;
-				}
-				else {echo "Выберите задание в правой колонке.";};
-				$m = "UPDATE user SET activity = ".time()." WHERE id = ?";
-				mysql_qw($m, $_SESSION['id']) or die(mysql_error());
-			};
-			
-			
-			?>
-		</td>
-		<td width = "30%" valign = "top">
-			<label>Тип задачи:</label></br>
-			<select name = "type">
-				<option>Выберите тип задачи</option>
-				<option value = "Числа_и_вычисления">Числа_и_вычисления</option>
-				<option value = "Алгебраические_выражения">Алгебраические_выражения</option>
-				<option value = "Уравнения_и_неравенства">Уравнения_и_неравенства</option>
-				<option value = "Числовые_последовательности">Числовые_последовательности</option>
-				<option value = "Функции">Функции</option>
-				<option value = "Координаты_на_прямой_и_плоскости">Координаты_на_прямой_и_плоскости</option>
-				<option value = "Геометрия">Геометрия</option>
-				<option value = "Статистика_и_теория_вероятности">Статистика_и_теория_вероятности</option>
-			</select>
-			<div id="list"></div>
-			
-		</td>
-	</tr>
-</table>
+	<div id="ege" class="tab"<? if ($_SESSION['razdel'] == "ege") {
+		echo "style='background-color:red'";
+	}; ?>>
+		<p>ЕГЭ</p>
+	</div>
+	<div id="sh_f" class="tab"<? if ($_SESSION['razdel'] == "sh_f") {
+		echo "style='background-color:red'";
+	}; ?>>
+		<p>ШК_св</p>
+	</div>
+	<div id="U_f" class="tab"<? if ($_SESSION['razdel'] == "U_f") {
+		echo "style='background-color:red'";
+	}; ?>>
+		<p>ВУЗ</p>
+	</div>
 </div>
+<div align  = "center">
 
-</body>
-</html>
+	<div id="imya">
+		<p>
+			<?=htmlspecialchars($_SESSION['imya'])?>
+			&nbsp;
+			<?=htmlspecialchars($_SESSION['familiya'])?>
+			<a href="<?=$_SERVER['SCRIPT_NAME']?>?statist=1">(Статистика)</a>
+		</p>
+	</div>
+
+	<div id="shield_cont">
+		<div>
+			<p>Щит</p>
+		</div>
+		<div id = "shield">
+			<div id="sh1" <?php if ($_SESSION['razdel'] !== "oge"){echo "style = display:none";} else{echo "style = display:block";}; ?>>
+			<?
+			// переделать запрос
+						$shield4 = $db->prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z 
+							ON s.id_zsh = z.id
+							WHERE s.id_user = ? and z.razdel = ? ORDER BY id_zsh
+							 ");
+						$oge = "oge";
+						$shield4->bind_param('is', $_SESSION['id'], $oge);
+						$shield4->execute();
+						$shield4->bind_result($id_rz, $nazvanie);
+						$m = "";
+						while ($shield4->fetch()) {
+							$m = $m."
+			<p>
+				<span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie."</span>
+				<span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span>
+			</p>
+			";
+						};
+						if ($m == "") {
+							echo "Щит пуст!";
+						}
+						else{
+							echo $m;
+						};
+						
+						$shield4->close();
+					?>
+			</div>
+			<div id="sh2" <?php if ($_SESSION['razdel'] !== "ege"){echo "style = display:none";} else{echo "style = display:block";}; ?> >
+				<?
+							$shield4 = $db->
+				prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z 
+							ON s.id_zsh = z.id
+							WHERE s.id_user = ? and z.razdel = ? ORDER BY id_zsh
+							");
+							$ege = "ege";
+							$shield4->bind_param('is', $_SESSION['id'], $ege);
+							$shield4->execute();
+							$shield4->bind_result($id_rz, $nazvanie);
+							$m = "";
+							while ($shield4->fetch()) {
+								$m = $m."
+				<p>
+					<span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie."</span>
+					<span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span>
+				</p>
+				";
+							};
+							if ($m == "") {
+								echo "Щит пуст!";
+							}
+							else{
+								echo $m;
+							};
+							$shield4->close();
+						?>
+			</div>
+			<div id="sh3" <?php if ($_SESSION['razdel'] !== "sh_f"){echo "style = display:none";} else{echo "style = display:block";}; ?>>
+				<?
+							$shield4 = $db->
+				prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z 
+							ON s.id_zsh = z.id
+							WHERE s.id_user = ? and z.razdel = ? ORDER BY id_zsh
+							");
+							$sh_f = "sh_f";
+							$shield4->bind_param('is', $_SESSION['id'], $sh_f);
+							$shield4->execute();
+							$shield4->bind_result($id_rz, $nazvanie);
+							$m = "";
+							while ($shield4->fetch()) {
+								$m = $m."
+				<p>
+					<span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie."</span>
+					<span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span>
+				</p>
+				";
+							};
+							if ($m == "") {
+								echo "Щит пуст!";
+							}
+							else{
+								echo $m;
+							};
+							$shield4->close();
+						?>
+			</div>
+			<div id="sh4" <?php if ($_SESSION['razdel'] !== "U_f"){echo "style = display:none";} else{echo "style = display:block";}; ?>>
+				<?
+							$shield4 = $db->
+				prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z 
+							ON s.id_zsh = z.id
+							WHERE s.id_user = ? and z.razdel = ? ORDER BY id_zsh");
+							$U_f = "U_f";
+							$shield4->bind_param('is', $_SESSION['id'], $U_f);
+							$shield4->execute();
+							$shield4->bind_result($id_rz, $nazvanie);
+							$m = "";
+							while ($shield4->fetch()) {
+								$m = $m."
+				<p>
+					<span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie."</span>
+					<span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span>
+				</p>
+				";
+							};
+							if ($m == "") {
+								echo "Щит пуст!";
+							}
+							else{
+								echo $m;
+							};
+							$shield4->close();
+						?>
+			</div>
+		</div>
+	</div>
+	<div id="arsenal">
+		<p>Арсенал</p>
+		<div id="ars1" <?php if ($_SESSION['razdel'] !== "oge"){echo "style = display:none";} else{echo "style = display:block";} ?>>
+		
+		<select name = "type2">
+			<option>Выберите тип задачи</option>
+			<option value = "Числа_и_вычисления">Числа_и_вычисления</option>
+			<option value = "Алгебраические_выражения">Алгебраические_выражения</option>
+			<option value = "Уравнения_и_неравенства">Уравнения_и_неравенства</option>
+			<option value = "Числовые_последовательности">Числовые_последовательности</option>
+			<option value = "Функции">Функции</option>
+			<option value = "Координаты_на_прямой_и_плоскости">Координаты_на_прямой_и_плоскости</option>
+			<option value = "Геометрия">Геометрия</option>
+			<option value = "Статистика_и_теория_вероятности">Статистика_и_теория_вероятности</option>
+
+		</select>
+		<div id="list2" ></div>
+		</div>
+		<div id="ars2" class="ars" <?php if ($_SESSION['razdel'] !== "ege"){echo "style = display:none";} else{echo "style = display:block";}; ?>>1
+			<div id="ars2_list"></div>
+		</div>
+		<div id="ars3" class="ars" <?php if ($_SESSION['razdel'] !== "sh_f"){echo "style = display:none";}  else{echo "style = display:block";};?>>2
+			<div id="ars3_list"></div>
+		</div>
+		<div id="ars4" class="ars" <?php if ($_SESSION['razdel'] !== "U_f"){echo "style = display:none";} else{echo "style = display:block";}; ?>>3
+			<div id="ars4_list"></div>
+		</div>
+	</div>
+	<div id="text_z">
+		
+	</div>
+	<div id="baza">
+		
+		<label>Тип задачи:</label>
+		<br>
+		<div id="baza1" <?php if ($_SESSION['razdel'] !== "oge"){echo "style = display:none";} else{echo "style = display:block";}; ?>>
+		<select name = "type">
+			<option>Выберите тип задачи</option>
+			<option value = "Числа_и_вычисления">Числа_и_вычисления</option>
+			<option value = "Алгебраические_выражения">Алгебраические_выражения</option>
+			<option value = "Уравнения_и_неравенства">Уравнения_и_неравенства</option>
+			<option value = "Числовые_последовательности">Числовые_последовательности</option>
+			<option value = "Функции">Функции</option>
+			<option value = "Координаты_на_прямой_и_плоскости">Координаты_на_прямой_и_плоскости</option>
+			<option value = "Геометрия">Геометрия</option>
+			<option value = "Статистика_и_теория_вероятности">Статистика_и_теория_вероятности</option>
+		</select>
+		<div id="list"></div>
+		</div>
+		<div id="baza2" class="baza" <?php if ($_SESSION['razdel'] !== "ege"){echo "style = display:none";} else{echo "style = display:block";}; ?>>2<div id="list2"></div></div>
+		<div id="baza3" class="baza" <?php if ($_SESSION['razdel'] !== "sh_f"){echo "style = display:none";} else{echo "style = display:block";}; ?>>3<div id="list3"></div></div>
+		<div id="baza4" class="baza" <?php if ($_SESSION['razdel'] !== "U_f"){echo "style = display:none";} else{echo "style = display:block";}; ?>>4<div id="list4"></div></div>
+	</div>
+
+</div>

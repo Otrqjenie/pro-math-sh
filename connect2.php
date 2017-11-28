@@ -1,7 +1,10 @@
 <?php
-$user="root";
-$pass="";
-$db="work";
+if (!defined('proverka')) {
+	die();
+};
+$user="ww";
+$pass="eQfL6QsZudbW6jOj";
+$db="db";
 mysql_connect("localhost", $user, $pass)
  or die("Error".misql_error());
 @mysql_query("CREATE DATABASE $db");

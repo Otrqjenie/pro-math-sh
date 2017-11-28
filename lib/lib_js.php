@@ -1,4 +1,7 @@
 <?php
+if (!defined('proverka')) {
+    die();
+};
 function rand_string (
  
         $length = 15, # Желаемая длина строки

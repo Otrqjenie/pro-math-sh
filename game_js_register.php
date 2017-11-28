@@ -1,4 +1,5 @@
 <?php
+define('proverka', 84);
 require_once "connect2.php";
 require_once "lib/request.php";
 require_once "lib/lib_js.php";

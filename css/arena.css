@@ -1,0 +1,227 @@
+.tab{
+	/*position: absolute;*/
+	width: 70px;
+	height: 50px;
+	color: #696969;
+	/*text-decoration-color: #9370DB;*/
+	text-align: center;
+	/*vertical-align: middle; не работает*/
+	/*margin: 0px 5px 5px 5px;*/
+	float: left;
+	background-color: #DCDCDC;
+	/*padding-top: 10px;*/
+	cursor: pointer;
+	position: absolute;
+
+}
+#oge{
+	top: 0px;
+	left: 0px;
+}
+#ege{
+	top: 0px;
+	left: 80px;
+}
+#sh_f{
+	top: 0px;
+	left: 160px;
+}
+#U_f{
+	top: 0px;
+	left: 240px;
+}
+.panel_in{
+	background-color: #E6E6FA;
+	width: 180px;
+	height: 45px;
+	position: absolute;
+	text-align: center;
+	cursor: pointer;
+}
+#panel_in1{
+	top: 10px;
+	left: 10px;
+}
+#panel_in2{
+	top: 65px;
+	left: 10px;
+}
+#panel_in3{
+	top: 120px;
+	left: 10px;
+}
+.panel_in2{
+	position: absolute;
+	background-color: #E6E6FA;
+	width: 180px;
+	text-align: center;
+	/*padding-top: 5px;*/
+	/*padding-bottom: 5px;*/
+	/*height: 40px;*/
+	/*margin: 10px;*/
+}
+#tab{
+	width: 320px;
+	height: 70px;
+	/*margin: 0 auto;*/
+	color: black;
+	position: absolute;
+	top: 50px;
+	left: 445px;
+
+}
+#box{
+	position: absolute;
+	top: 0px;
+	left: 300px;
+	width: 600px;
+	height: 500px;
+	/*margin: 0 auto;*/
+	background-color: #DCDCDC;
+}
+#panel{
+	position: absolute;
+	top: 0px;
+	left: 50px;
+	width: 200px;
+	height: 400px;
+	background-color: #DCDCDC;
+}
+#panel2{
+	position: absolute;
+	top: 0px;
+	left: 950px;
+	width: 200px;
+	height: 300px;
+	background-color: #DCDCDC;
+}
+#players{
+	width: 600px;
+	top: 0px;
+	margin: 0 auto;
+}
+#panel_in4{
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+#create{
+	position: absolute;
+	top: 0px;
+	left: 300px;
+	display: none;
+	width: 600px;
+	height: 500px;
+	margin: 0 auto;
+	background-color: red;
+}
+#polosa{
+	width: 590px;
+	height: 50px;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background-color: #DCDCDC;
+}
+#forma{
+	width: 590px;
+	height: 400px;
+	position: absolute;
+	top: 80px;
+	left: 5px;
+	background-color: #F8F8FF;
+}
+#backward{
+	position: absolute;
+	cursor: pointer;
+	width: 40px;
+	height: 40px;
+	top: 5px;
+	left: 540px;
+	background-color: #E6E6FA;
+}
+#zaglavie{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 530px;
+	height: 50px;
+	background-color: #E6E6FA;
+	text-align: center;
+}
+#form_in{
+	width: 300px;
+	height: 250px;
+	position: absolute;
+	top: 50px;
+	left: 150px;
+	background-color: #EEE9E9;
+}
+.vvod{
+	width: 180px;
+	height: 80px;
+	background-color: white;
+	position: absolute;
+}
+#vvod1{
+	top: 90px;
+	left: 205px;
+}
+#minuti_val{
+	width: 60px;
+	height: 20px;
+	/*background-color: blue;*/
+	top: 10px;
+	left: 105px;
+	position: absolute;
+}
+#pp{
+	position: absolute;
+	top: 10px;
+	left: 5px;
+	/*background-color: blue;*/
+	width: 100px;
+	height: 20px;
+}
+#input_m{
+	top: 50px;
+	left: 10px;
+	position: absolute;
+}
+#go{
+	top: 250px;
+	left: 267px;
+	position: absolute;
+	width: 55px;
+	height: 30px;
+}
+#v_boy{
+	position: absolute;
+	top: 0px;
+	left: 255px;
+	width: 80px;
+	height: 50px;
+}
+.pr_f{
+	
+}
+#panel_in2_box{
+	position: absolute;
+	top: 100px;
+	left: 10px;
+	width: 180px;
+	height: 150px;
+	text-align: center;
+	background-color: #E6E6FA;
+}
+.priglos{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 180px;
+	height: 50px;
+	/*background-color: green;*/
+}
+.zero{
+	margin: 0px;
+}

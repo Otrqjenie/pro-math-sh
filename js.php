@@ -71,6 +71,19 @@ if (isset($_SESSION['enemy'])) {
 			if ($i == 0) {
 				echo "<h1>Вы проиграли</h1>";
 			}
+
+			if ($i == 0) {
+				$_SESSION['fighter'] = null;
+				$_SESSION['enemy_shield'] = null;
+				$_SESSION['id_fight'] = null;
+				$_SESSION['proigish'] = null;
+				$_SESSION['go_fight'] = null;
+				$_SESSION['slojnost'] = null;
+				$_SESSION['enemy_shield_name'] = null;
+				// echo "hello!!!";
+			};
+
+			
 			}
 			else {
 				echo $_SESSION['result'];
@@ -94,16 +107,6 @@ if (isset($_SESSION['enemy'])) {
 
 		};
 
-		if ($i == 0) {
-			$_SESSION['fighter'] = null;
-			$_SESSION['enemy_shield'] = null;
-			$_SESSION['id_fight'] = null;
-			$_SESSION['proigish'] = null;
-			$_SESSION['go_fight'] = null;
-			$_SESSION['slojnost'] = null;
-			$_SESSION['enemy_shield_name'] = null;
-			// echo "hello!!!";
-		};
 
 
 		// -------------------------------------------------

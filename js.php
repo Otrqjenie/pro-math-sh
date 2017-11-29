@@ -80,7 +80,6 @@ if (isset($_SESSION['enemy'])) {
 				$_SESSION['go_fight'] = null;
 				$_SESSION['slojnost'] = null;
 				$_SESSION['enemy_shield_name'] = null;
-				// echo "hello!!!";
 			};
 
 			
@@ -191,10 +190,10 @@ if (isset($_REQUEST['otvet'])) {
 	// Проверяем ответ
 	$m = 'SELECT COUNT(*) FROM zadania WHERE id = ? and otvet = ?';
 	$r = $db -> prepare($m);
-	$c = 12;
+	$c_otvetov = 12;
 	$r -> bind_param('is', $_SESSION['enemy_shield'], $otvet);
 	$r -> execute();
-	$r -> bind_result($c);
+	$r -> bind_result($c_otvetov);
 	$r -> fetch();
 	$r -> close();
 
@@ -231,7 +230,7 @@ $a[10] = 900;
 $a[11] = 1260;
 $str = "доделать";
 $quantity_enemy = 1;
-echo json_encode(array("str" => $_SESSION['enemy_shield'], "quantity_enemy" => $quantity_enemy, "count" => $c ));
+echo json_encode(array("str" => $_SESSION['enemy_shield'], "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov ));
 };
 // ------------------------------------------------------------------
 // Обработчик запросов на проверку огня противника

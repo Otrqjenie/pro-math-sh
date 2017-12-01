@@ -185,52 +185,93 @@ if ( isset($_REQUEST['type2'])) {
 //Обработчик ответов
 //  можно усовершенствовать собрав несколько запросов в один
 if (isset($_REQUEST['otvet'])) {
-	$s_id = filter_var($_SESSION['id'], FILTER_VALIDATE_INT);
-	$otvet = filter_var($_REQUEST['otvet'], FILTER_SANITIZE_SPECIAL_CHARS);
-	// Проверяем ответ
-	$m = 'SELECT COUNT(*) FROM zadania WHERE id = ? and otvet = ?';
+	// Надо поставить ограничение на количество проверок ответов в минуту их должно быть не более 3-х
+	$t = time()-60;
+	$m = "SELECT COUNT(*) FROM fire WHERE id_strel = ? and vremya > ?";
 	$r = $db -> prepare($m);
-	$c_otvetov = 12;
-	$r -> bind_param('is', $_SESSION['enemy_shield'], $otvet);
+	$r -> bind_param('ii', $_SESSION['id'], $t);
 	$r -> execute();
-	$r -> bind_result($c_otvetov);
+	$r -> bind_result($c_fire);
 	$r -> fetch();
 	$r -> close();
+	if ($c_fire > 3) {
+		$message = "Sorry";
+		echo json_encode(array("message" => $message));
 
-	// -------------
+	}
+	else{	
 
-	$m = 'SELECT count FROM user_param WHERE id = '.$s_id;
-	$r = $db -> query($m);
+		
+		
+		$s_id = filter_var($_SESSION['id'], FILTER_VALIDATE_INT);
+		$otvet = filter_var($_REQUEST['otvet'], FILTER_SANITIZE_SPECIAL_CHARS);
 
-	$row = $r -> fetch_array(MYSQL_ASSOC);
-	$_SESSION['count'] = $row['count'];
-	$r -> close();
-// --------------------------------
-// считаем щиты противника
+		// Проверяем ответ
+		$m = 'SELECT COUNT(*) FROM zadania WHERE id = ? and otvet = ?';
+		$r = $db -> prepare($m);
+		$c_otvetov = 12;
+		$r -> bind_param('is', $_SESSION['enemy_shield'], $otvet);
+		$r -> execute();
+		$r -> bind_result($c_otvetov);
+		$r -> fetch();
+		$r -> close();
+		// ------------------------------------------------------
+		// Добавляем в fire огонь
+		$m = "INSERT INTO fire SET 
+			id_strel = ?,
+			id_jertvi = ?,
+			vremya = ?,
+			id_z = ?,
+			rez = ?,
+			ot = 0
+		";
+		$r = $db -> prepare($m);
+		$r -> bind_param('iiiii', $_SESSION['id'], $_SESSION['enemy'], time(), $_SESSION['enemy_shield'], $c_otvetov);
+		$r -> execute();
+		$r -> close();
+		// -----------------------------------------------
+		if ($c_otvetov == 1) {
+		// Удаляем из щита решённое
+		$m	= "";
+		};
 
-	$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ?';
-	$r2 = $db -> prepare($m);
-	$r2 -> bind_param('i', $_SESSION['enemy']);
-	$r2 -> execute();
-	$r2 -> bind_result($c);
-	$r2 -> fetch();
-	$r2 -> close();
-	$_SESSION['quantity_enemy'] = $c;
+		// -------------
 
-$a[1] = 0;
-$a[2] = 12;
-$a[3] = 30;
-$a[4] = 57;
-$a[5] = 99;
-$a[6] = 162;
-$a[7] = 255;
-$a[8] = 393;
-$a[9] = 600;
-$a[10] = 900;
-$a[11] = 1260;
-$str = "доделать";
-$quantity_enemy = 1;
-echo json_encode(array("str" => $_SESSION['enemy_shield'], "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov ));
+		$m = 'SELECT count FROM user_param WHERE id = '.$s_id;
+		$r = $db -> query($m);
+
+		$row = $r -> fetch_array(MYSQL_ASSOC);
+		$_SESSION['count'] = $row['count'];
+		$r -> close();
+	// --------------------------------
+	// считаем щиты противника
+
+		$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ?';
+		$r2 = $db -> prepare($m);
+		$r2 -> bind_param('i', $_SESSION['enemy']);
+		$r2 -> execute();
+		$r2 -> bind_result($c);
+		$r2 -> fetch();
+		$r2 -> close();
+		$_SESSION['quantity_enemy'] = $c;
+
+
+	$a[1] = 0;
+	$a[2] = 12;
+	$a[3] = 30;
+	$a[4] = 57;
+	$a[5] = 99;
+	$a[6] = 162;
+	$a[7] = 255;
+	$a[8] = 393;
+	$a[9] = 600;
+	$a[10] = 900;
+	$a[11] = 1260;
+	$str = "доделать";
+	$quantity_enemy = 1;
+	$message = 0;
+	echo json_encode(array("str" => $_SESSION['enemy_shield'], "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov, "message" => $message ));
+}
 };
 // ------------------------------------------------------------------
 // Обработчик запросов на проверку огня противника

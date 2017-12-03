@@ -42,7 +42,7 @@ if (isset($_SESSION['enemy'])) {
             	";
             	if (isset($row['img'])) {           
             	$m3 = "<p><img src = 'imag/".$row['img']."'></p>";
-            	$m4 = $m1.$m3.$m2."<p>enemy_shield=".$_SESSION['enemy_shield']."</p>";
+            	$m4 = $m1.$m3.$m2."<p>номер=".$_SESSION['enemy_shield']."</p>";
             	echo $m4;
             	}
 				else {echo "Выберите задание выше.";};
@@ -195,7 +195,7 @@ if (isset($_REQUEST['otvet'])) {
 	$r -> fetch();
 	$r -> close();
 	if ($c_fire > 3) {
-		$message = "Sorry";
+		$message = "Много ответов";
 		echo json_encode(array("message" => $message));
 
 	}
@@ -231,9 +231,31 @@ if (isset($_REQUEST['otvet'])) {
 		$r -> close();
 		// -----------------------------------------------
 		if ($c_otvetov == 1) {
-		// Удаляем из щита решённое
-		$m	= "";
-		};
+			// Считаем свои щиты
+			$m = 'SELECT COUNT(*) FROM shield WHERE id_user = '.$_SESSION['id'];
+			$r = $db -> query($m);
+			// $r2 = mysql_qw('SELECT COUNT(*) FROM shield WHERE id_user = ?', $_SESSION['id']) or die(mysql_error());
+			$row2 = $r -> fetch_array(MYSQL_ASSOC);
+			$c_sh = $row2['COUNT(*)'];
+			$r -> close();
+				$message	= "Верно";
+			if ($c_sh > 0) {
+				// Удаляем из щита решённое
+				$m = "DELETE FROM shield WHERE id_user = ? and id_zsh = ?";
+				$r = $db -> prepare($m);
+				$r -> bind_param('ii', $_SESSION['enemy'], $_SESSION['enemy_shield']);
+				$r -> execute();
+				$r -> close();
+				// считаем щиты противника
+				$m = "";
+				// если удар победный делаем запись в очередь на победу и присваиваем победу сильнейшему
+			};
+
+		}
+		else
+		{
+			$message = "Неверно";
+		}
 
 		// -------------
 
@@ -267,10 +289,10 @@ if (isset($_REQUEST['otvet'])) {
 	$a[9] = 600;
 	$a[10] = 900;
 	$a[11] = 1260;
-	$str = "доделать";
+	// $str = "доделать";
 	$quantity_enemy = 1;
-	$message = 0;
-	echo json_encode(array("str" => $_SESSION['enemy_shield'], "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov, "message" => $message ));
+	// $message = 0;
+	echo json_encode(array("str" => $str, "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov, "message" => $message ));
 }
 };
 // ------------------------------------------------------------------

@@ -1,0 +1,79 @@
+.fild{
+	background: #708090;
+	height: 50px;
+	width: 100px;
+	position: absolute;
+}
+.fild2{
+	background: #708090;
+	height: 50px;
+	width: 200px;
+	position: absolute;
+}
+.fild3{
+	background: #708090;
+	height: 500px;
+	width: 900px;
+	position: absolute;
+}
+.fild4{
+	background: #E0FFFF;
+	position: absolute;
+	width: 50px;
+}
+#timer{
+	top: 20px;
+	left: 1100px;
+}
+#z1{
+	top: 120px;
+	left: 50px;
+}
+#but1{
+	top: 120px;
+	left: 200px;
+}
+#z2{
+	top: 220px;
+	left: 50px;
+}
+#but2{
+	top: 220px;
+	left: 200px;
+}
+#video{
+	top: 320px;
+	left: 50px;
+}
+#videobut{
+	top: 320px;
+	left: 200px;
+}
+#idei{
+	top: 420px;
+	left: 50px;
+}
+#ideibut{
+	top: 420px;
+	left: 200px;
+}
+#sess{
+	top: 520px;
+	left: 200px;
+}
+button{
+	width: 60px;
+	height: 20px;
+}
+#conteiner{
+	top: 20px;
+	left: 1230px;
+}
+#load{
+	top: 520px;
+	left: 50px;
+}
+#graph{
+	top: 220px;
+	left: 400px;
+}

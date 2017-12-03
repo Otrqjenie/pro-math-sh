@@ -234,7 +234,6 @@ if (isset($_REQUEST['otvet'])) {
 			// Считаем свои щиты
 			$m = 'SELECT COUNT(*) FROM shield WHERE id_user = '.$_SESSION['id'];
 			$r = $db -> query($m);
-			// $r2 = mysql_qw('SELECT COUNT(*) FROM shield WHERE id_user = ?', $_SESSION['id']) or die(mysql_error());
 			$row2 = $r -> fetch_array(MYSQL_ASSOC);
 			$c_sh = $row2['COUNT(*)'];
 			$r -> close();
@@ -246,8 +245,26 @@ if (isset($_REQUEST['otvet'])) {
 				$r -> bind_param('ii', $_SESSION['enemy'], $_SESSION['enemy_shield']);
 				$r -> execute();
 				$r -> close();
+				// Если у нас такой задачи в арсенале не было добавляем
+				$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ? and id_zsh = ?';
+				$r = $db -> prepare($m);
+				$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy_shield']);
+				$r -> execute();
+				$r -> bind_result($count);
+				$r -> close();
+				if ($count == 0) {
+					$m = 'INSERT INTO arsenal (id_user, id_rz) VALUES(?, ?)';
+					$r = $db -> prepare($m);
+					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy_shield']);
+					$r -> execute();
+					$r -> close();
+				};
 				// считаем щиты противника
-				$m = "";
+				$m = "SELECT COUNT(*) FROM shield WHERE id_user = ".$_SESSION['enemy'];
+				$r = $db -> query($m);
+				$row = $r -> fetch_array(MYSQL_ASSOC);
+				$c_sh = $row['COUNT(*)'];
+
 				// если удар победный делаем запись в очередь на победу и присваиваем победу сильнейшему
 			};
 
@@ -292,7 +309,7 @@ if (isset($_REQUEST['otvet'])) {
 	// $str = "доделать";
 	$quantity_enemy = 1;
 	// $message = 0;
-	echo json_encode(array("str" => $str, "quantity_enemy" => $quantity_enemy, "count" => $c_otvetov, "message" => $message ));
+	echo json_encode(array("str" => $str, "quantity_enemy" => $quantity_enemy, "count" => $c_sh, "message" => $message ));
 }
 };
 // ------------------------------------------------------------------

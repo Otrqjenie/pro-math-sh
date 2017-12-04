@@ -203,6 +203,10 @@ if (isset($_GET['otvet'])) {
 		$r -> close();
 		// $r -> prepare();
 if (isset($_SESSION['enemy'])) {
+			function Fun_add($value='')
+			{
+				# code...
+			}
 				$e_id = filter_var($_SESSION['enemy'], FILTER_VALIDATE_INT);
 				$m = "SELECT * FROM user WHERE id = ".$e_id;
 				$r = $db -> query($m);
@@ -222,19 +226,17 @@ if (isset($_SESSION['enemy'])) {
 				$e_id = filter_var($_SESSION['enemy'], FILTER_VALIDATE_INT);
 				$m = 'SELECT s.id_zsh, s.id_user, z.nazvanie  FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = '.$e_id.' ORDER BY s.id_zsh';
 				if($r = $db -> query($m)){
-					// echo "Yay";
+					echo "<div id = 'shield2'> <p>Вражеский щит</p> ";
+					for ($data = array(); $row = $r -> fetch_array(MYSQL_ASSOC); $data[] = $row) {
+						$row['id_zsh'] = filter_var($row['id_zsh'], FILTER_SANITIZE_STRING); 
+						echo "<p onmousedown = 'load1(".$row['id_zsh'].")'>".$row['nazvanie'].
+						"</p>";	
+						$i++;
+					};
+					echo "</div>";
 				};
-				// $r -> bind_param('i', $_SESSION['enemy']);
-				// $r -> execute();
-				// $r = mysql_qw($m, $_SESSION['enemy']) or die(mysql_error());
-				echo "<div id = 'shield2'> <p>Вражеский щит</p> ";
-				for ($data = array(); $row = $r -> fetch_array(MYSQL_ASSOC); $data[] = $row) {
-					$row['id_zsh'] = filter_var($row['id_zsh'], FILTER_SANITIZE_STRING); 
-					echo "<p onmousedown = 'load1(".$row['id_zsh'].")'>".$row['nazvanie'].
-					"</p>";	
-					$i++;
-				};
-				echo "</div>";
+				$r -> close();
+								
 			};
 ?>
 

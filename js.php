@@ -264,7 +264,42 @@ if (isset($_REQUEST['otvet'])) {
 				$r = $db -> query($m);
 				$row = $r -> fetch_array(MYSQL_ASSOC);
 				$c_sh = $row['COUNT(*)'];
+				if ($c_sh > 0) {
+					// Усовершенствовать
+					$e_id = filter_var($_SESSION['enemy'], FILTER_VALIDATE_INT);
+					$m = "SELECT * FROM user WHERE id = ".$e_id;
+					$r = $db -> query($m);
+					// $r -> bind_param('i', $_SESSION['id']);
+					// $r -> execute();
+					// $r = mysql_qw($m, $_SESSION['enemy']) or die(mysql_error());
+					$row = $r -> fetch_array(MYSQL_ASSOC);
+					$r -> close();
+					$_SESSION['enemy_cunt'] = filter_var($row['count'], FILTER_SANITIZE_STRING);
+					$row['imya'] = filter_var($row['imya'], FILTER_SANITIZE_STRING);
+					$row['familiya'] = filter_var($row['familiya'], FILTER_SANITIZE_STRING);
+					$_SESSION['enemy_cunt'] = filter_var($_SESSION['enemy_cunt'], FILTER_SANITIZE_STRING);
+					$str = "<div id='name2'><p>".$row['imya']." ".$row['familiya']."</p>
+						<p id = 'experience_e'>Опыт: ".$_SESSION['enemy_cunt']."</p>
+					</div>";
+					$i = 0;
+					$e_id = filter_var($_SESSION['enemy'], FILTER_VALIDATE_INT);
+					$m = 'SELECT s.id_zsh, s.id_user, z.nazvanie  FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = '.$e_id.' ORDER BY s.id_zsh';
+					if($r = $db -> query($m)){
+						$str .= " <p>Вражеский щит</p> ";
+						for ($data = array(); $row = $r -> fetch_array(MYSQL_ASSOC); $data[] = $row) {
+							$row['id_zsh'] = filter_var($row['id_zsh'], FILTER_SANITIZE_STRING); 
+							$str .= "<p onmousedown = 'load1(".$row['id_zsh'].")'>".$row['nazvanie'].
+							"</p>";	
+							$i++;
+						};
+						// $str .= "</div>";
+					};
+					$r -> close();
+					
+				};
+				$m = "SELECT ";
 
+				
 				// если удар победный делаем запись в очередь на победу и присваиваем победу сильнейшему
 			};
 

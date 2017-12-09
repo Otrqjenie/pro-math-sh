@@ -26,7 +26,6 @@ if (isset($_SESSION['enemy'])) {
 					$i++;
 				};
 				if ($i > 0) {
-				// работаю здесь
 				$m = 'SELECT * FROM zadania WHERE id = '.$_SESSION['enemy_shield'];
 				$r = $db -> query($m);
 				// $r = mysql_qw('SELECT * FROM zadania WHERE id = ?', $_SESSION['enemy_shield']) or die(mysql_error());
@@ -49,6 +48,7 @@ if (isset($_SESSION['enemy'])) {
 
 				};
 			if ($i == 0) {
+				// Разобраться
 				$m = 'UPDATE fight SET status = 3, id_vin = ? WHERE id_fight = ?';
 				$r = $db -> prepare($m);
 				$r -> bind_param('ii', $_SESSION['id'], $_SESSION['id_fight']);
@@ -73,13 +73,17 @@ if (isset($_SESSION['enemy'])) {
 			}
 
 			if ($i == 0) {
-				$_SESSION['fighter'] = null;
-				$_SESSION['enemy_shield'] = null;
-				$_SESSION['id_fight'] = null;
-				$_SESSION['proigish'] = null;
-				$_SESSION['go_fight'] = null;
-				$_SESSION['slojnost'] = null;
-				$_SESSION['enemy_shield_name'] = null;
+				function ses_del()
+				{
+					$_SESSION['fighter'] = null;
+					$_SESSION['enemy_shield'] = null;
+					$_SESSION['id_fight'] = null;
+					$_SESSION['proigish'] = null;
+					$_SESSION['go_fight'] = null;
+					$_SESSION['slojnost'] = null;
+					$_SESSION['enemy_shield_name'] = null;
+				};
+				ses_del();
 			};
 
 			
@@ -296,8 +300,44 @@ if (isset($_REQUEST['otvet'])) {
 					};
 					$r -> close();
 					
+				}
+				else{
+					// работаю
+				$m = "INSERT INTO queue_vin SET
+					id_fight = ?,
+					id_vinner =?
+				";
+				$r = $db -> prepare($m);
+				$r -> bind_param('ii', $_SESSION['id_fight'], $_SESSION['id']);
+				$r -> execute();
+				$r -> close();
+				// определяем кто первый добил
+				$m = "SELECT id_vinner FROM queue_vin WHERE id_fight = ? ORDER BY id";
+				$r = $db -> prepare($m);
+				$r -> bind_param('i', $_SESSION['id_fight']);
+				$r -> execute();
+				$r -> bind_result($id_vinner);
+				$r -> close();
+				// print_r($id_vinner);
+					echo "work";
+				if ($id_vinner == $_SESSION['id']) {
+					// С победным ударом должны происх все драмматические изменения
+					$m = "UPDATE user_param SET readiness = 0 WHERE id = ? and id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy']);
+					$r -> execute();
+					$r -> close();
+
+					$m = 'UPDATE fight SET status = 3, id_vin = ? WHERE id_fight = ?';
+					$r = $db -> prepare($m);
+					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['id_fight']);
+					$r -> execute();
+					$r -> close();
+					ses_del();
+					$message = "Вы победили!";
+
+				}
 				};
-				$m = "SELECT ";
 
 				
 				// если удар победный делаем запись в очередь на победу и присваиваем победу сильнейшему
@@ -898,6 +938,19 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  	echo "red";
  };
  if (isset($_REQUEST['new_f'])) {
+ 	// Ограничиваем количество приглашений
+ 	$m = "SELECT COUNT(*) FROM fight WHERE id_priglos = ? and status = 0";
+ 	$r = $db -> prepare($m);
+ 	$r -> bind_param('i', $_SESSION['id']);
+ 	$r -> execute();
+ 	$r -> bind_result($count);
+ 	$r -> fetch();
+ 	$r -> close();
+ 	if ($count > 0) {
+ 		die();
+ 	};
+
+ 	// -------------------------------------
  	$r = $db->prepare("SELECT readiness, nik FROM user_param WHERE id = ?");
  	$r->bind_param('i', $_SESSION['id']);
  	$r->execute();
@@ -940,7 +993,7 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
 
  };
  // Принятие боя не автор
-// работаю
+
  if (isset($_REQUEST['go_f'])) {
  	if ($_REQUEST['go_f'] == $_SESSION['id']) {
  		$del = $db->prepare("DELETE FROM fight WHERE id_priglos = ? and (status != 1 or status != 3)");

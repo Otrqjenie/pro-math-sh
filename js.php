@@ -10,6 +10,16 @@ require_once 'lib/connect.php';
 // require_once "lib/request.php";
 session_start();
 header("Content-Type: text/html; charset=utf-8");
+function ses_del()
+{
+	$_SESSION['fighter'] = null;
+	$_SESSION['enemy_shield'] = null;
+	$_SESSION['id_fight'] = null;
+	$_SESSION['proigish'] = null;
+	$_SESSION['go_fight'] = null;
+	$_SESSION['slojnost'] = null;
+	$_SESSION['enemy_shield_name'] = null;
+};
 //Обработчик выбора заданий проверяет наличие врага
 if (isset($_REQUEST['enemy_shield'])) {
 	// Можно усовершенствовать
@@ -73,16 +83,7 @@ if (isset($_SESSION['enemy'])) {
 			}
 
 			if ($i == 0) {
-				function ses_del()
-				{
-					$_SESSION['fighter'] = null;
-					$_SESSION['enemy_shield'] = null;
-					$_SESSION['id_fight'] = null;
-					$_SESSION['proigish'] = null;
-					$_SESSION['go_fight'] = null;
-					$_SESSION['slojnost'] = null;
-					$_SESSION['enemy_shield_name'] = null;
-				};
+
 				ses_del();
 			};
 
@@ -312,17 +313,19 @@ if (isset($_REQUEST['otvet'])) {
 				$r -> execute();
 				$r -> close();
 				// определяем кто первый добил
+				$id_vinner = 0;
 				$m = "SELECT id_vinner FROM queue_vin WHERE id_fight = ? ORDER BY id";
 				$r = $db -> prepare($m);
 				$r -> bind_param('i', $_SESSION['id_fight']);
 				$r -> execute();
 				$r -> bind_result($id_vinner);
+				$r -> fetch();
 				$r -> close();
 				// print_r($id_vinner);
-					echo "work";
+					echo "work - ".$_SESSION['id_fight']."id_vinner-".$id_vinner;
 				if ($id_vinner == $_SESSION['id']) {
 					// С победным ударом должны происх все драмматические изменения
-					$m = "UPDATE user_param SET readiness = 0 WHERE id = ? and id = ?";
+					$m = "UPDATE user_param SET readiness = 0 WHERE id = ? or id = ?";
 					$r = $db -> prepare($m);
 					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy']);
 					$r -> execute();

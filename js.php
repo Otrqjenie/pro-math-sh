@@ -4,6 +4,7 @@
 // Можно усовершенствовать
 // Доделать
 // работаю
+// разобраться
 define('proverka', 84);
 // require_once "connect2.php";
 require_once 'lib/connect.php';
@@ -322,7 +323,7 @@ if (isset($_REQUEST['otvet'])) {
 				$r -> fetch();
 				$r -> close();
 				// print_r($id_vinner);
-					echo "work - ".$_SESSION['id_fight']."id_vinner-".$id_vinner;
+					// echo "work - ".$_SESSION['id_fight']."id_vinner-".$id_vinner;
 				if ($id_vinner == $_SESSION['id']) {
 					// С победным ударом должны происх все драмматические изменения
 					$m = "UPDATE user_param SET readiness = 0 WHERE id = ? or id = ?";
@@ -396,6 +397,7 @@ if (isset($_REQUEST['fire2'])) {
 	// Считаем время до конца боя
 	if (isset($_SESSION['id_fight'])) {
 		$_SESSION['t'] = $_SESSION['time_begin'] + $_SESSION['duration']*60 - time();
+		echo "work";
 		if ($_SESSION['t'] < 0) {
 			// делаем записи в таблице о ничьей
 			// сЛОЖНЫЙ запрос проверяющий кто мы пиглашающий или приглоашаемый и ставящий правильно в очередь нас
@@ -999,7 +1001,8 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
 
  if (isset($_REQUEST['go_f'])) {
  	if ($_REQUEST['go_f'] == $_SESSION['id']) {
- 		$del = $db->prepare("DELETE FROM fight WHERE id_priglos = ? and (status != 1 or status != 3)");
+ 	echo "hi";
+ 		$del = $db->prepare("DELETE FROM fight WHERE id_priglos = ? and (status <> 1 and status <> 3)");
  		$del -> bind_param('i', $_SESSION['id']);
  		$del -> execute();
  		$del -> close();

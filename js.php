@@ -213,12 +213,12 @@ if (isset($_REQUEST['otvet'])) {
 		$otvet = filter_var($_REQUEST['otvet'], FILTER_SANITIZE_SPECIAL_CHARS);
 
 		// Проверяем ответ
-		$m = 'SELECT COUNT(*) FROM zadania WHERE id = ? and otvet = ?';
+		$m = 'SELECT COUNT(*), slojnost FROM zadania WHERE id = ? and otvet = ?';
 		$r = $db -> prepare($m);
 		$c_otvetov = 12;
 		$r -> bind_param('is', $_SESSION['enemy_shield'], $otvet);
 		$r -> execute();
-		$r -> bind_result($c_otvetov);
+		$r -> bind_result($c_otvetov, $slojnost);
 		$r -> fetch();
 		$r -> close();
 		// ------------------------------------------------------
@@ -252,13 +252,32 @@ if (isset($_REQUEST['otvet'])) {
 				$r -> execute();
 				$r -> close();
 				// Если у нас такой задачи в арсенале не было добавляем
-				$m = 'SELECT COUNT(*) FROM shield WHERE id_user = ? and id_zsh = ?';
+				$count = 1;
+				$m = 'SELECT COUNT(*) FROM arsenal WHERE id_user = ? and id_rz = ?';
 				$r = $db -> prepare($m);
 				$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy_shield']);
 				$r -> execute();
 				$r -> bind_result($count);
+				$r -> fetch();
 				$r -> close();
 				if ($count == 0) {
+					// Добавляем опыта себе
+					$m = "SELECT experience FROM user_param WHERE id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('i', $_SESSION['id']);
+					$r -> execute();
+					$r -> bind_result($experience);
+					$r -> fetch();
+					$r -> close();
+
+					$experience = $experience + $slojnost;
+					$m = "UPDATE user_param SET experience = ? WHERE id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('ii', $experience, $_SESSION['id']);
+					$r -> execute();
+					$r -> close();
+
+					// добавляем в арсенал
 					$m = 'INSERT INTO arsenal (id_user, id_rz) VALUES(?, ?)';
 					$r = $db -> prepare($m);
 					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy_shield']);

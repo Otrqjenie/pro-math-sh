@@ -326,11 +326,47 @@ if (isset($_REQUEST['otvet'])) {
 					// echo "work - ".$_SESSION['id_fight']."id_vinner-".$id_vinner;
 				if ($id_vinner == $_SESSION['id']) {
 					// С победным ударом должны происх все драмматические изменения
-					$m = "UPDATE user_param SET readiness = 0 WHERE id = ? or id = ?";
+					// считаем бои победителя и побеждённого
+					// Можно усовершенствовать использовав функции
+					$m = "SELECT vins, figthts FROM user_param WHERE id = ?";
 					$r = $db -> prepare($m);
-					$r -> bind_param('ii', $_SESSION['id'], $_SESSION['enemy']);
+					$r -> bind_param('i', $_SESSION['id']);
+					$r -> execute();
+					$r -> bind_result($vins, $figthts);
+					$r -> fetch();
+					$r -> close();
+					$vins++;
+					$figthts++;
+
+					$m = "UPDATE user_param SET 
+					readiness = 0,
+					figthts = ?,
+					vins = ?
+					WHERE id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('iii', $figthts, $vins, $_SESSION['id']);
 					$r -> execute();
 					$r -> close();
+
+					// для врага
+					$m = "SELECT figthts FROM user_param WHERE id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('i', $_SESSION['enemy']);
+					$r -> execute();
+					$r -> bind_result($figthts);
+					$r -> fetch();
+					$r -> close();
+					$figthts++;
+
+					$m = "UPDATE user_param SET 
+					readiness = 0,
+					figthts = ?
+					WHERE id = ?";
+					$r = $db -> prepare($m);
+					$r -> bind_param('ii', $figthts, $_SESSION['enemy']);
+					$r -> execute();
+					$r -> close();
+					// Завершение боя
 
 					$m = 'UPDATE fight SET status = 3, id_vin = ? WHERE id_fight = ?';
 					$r = $db -> prepare($m);
@@ -341,6 +377,9 @@ if (isset($_REQUEST['otvet'])) {
 					$message = "Вы победили!";
 
 				}
+				elseif ($id_vinner == -1) {
+					die();
+				};
 				};
 
 				
@@ -395,31 +434,50 @@ if (isset($_REQUEST['otvet'])) {
 // Обработчик запросов на проверку огня противника
 if (isset($_REQUEST['fire2'])) {
 	// Считаем время до конца боя
+	// print_r($_SESSION['id_fight']);
 	if (isset($_SESSION['id_fight'])) {
 		$_SESSION['t'] = $_SESSION['time_begin'] + $_SESSION['duration']*60 - time();
-		echo "work";
+		// echo "work";
 		if ($_SESSION['t'] < 0) {
 			// делаем записи в таблице о ничьей
 			// сЛОЖНЫЙ запрос проверяющий кто мы пиглашающий или приглоашаемый и ставящий правильно в очередь нас
-			$m = "INSERT INTO queue SET
-			 id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ?),
-			id_prigloshaemogo = (SELECT id_priglos FROM fight WHERE id_fight = ?),
-			status = 'nichya', 
-			customer = 'tr_js',
-			customer_id =?
-			 ";
-			 $r = $db -> prepare($m);
-			 $r -> bind_param('iis', $_SESSION['id_fight'], $_SESSION['id_fight'], $_SESSION['id']);
-			 $r -> execute();
-			 $r -> close();
-			 $m = "SELECT customer_id, status FROM queue WHERE 
-			 id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ".$_SESSION['id_fight'].") and	id_prigloshaemogo = (SELECT id_priglos FROM fight WHERE id_fight = ".$_SESSION['id_fight'].")";
+
+
+			// $m = "INSERT INTO queue SET
+			//  id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ?),
+			// id_prigloshaemogo = (SELECT id_prigloshaemogo FROM fight WHERE id_fight = ?),
+			// status = 'nichya', 
+			// customer = 'tr_js',
+			// customer_id =?
+			//  ";
+			//  $r = $db -> prepare($m);
+			//  $r -> bind_param('iis', $_SESSION['id_fight'], $_SESSION['id_fight'], $_SESSION['id']);
+			//  $r -> execute();
+			//  $r -> close();
+			//  $m = "SELECT customer_id, status FROM queue WHERE 
+			//  id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ".$_SESSION['id_fight'].") and	id_prigloshaemogo = (SELECT id_prigloshaemogo FROM fight WHERE id_fight = ".$_SESSION['id_fight'].")";
 			
-			 $r = $db -> query($m);
-			$row = $r -> fetch_array(MYSQL_ASSOC);
-			 echo $row['customer_id']."_".$row['status'];
-			if (($row['customer_id'] == $_SESSION['id']) and ($row['status'] == 'nichya')) {
-				echo "hi3";
+			//  $r = $db -> query($m);
+			// $row = $r -> fetch_array(MYSQL_ASSOC);
+			//  echo $row['customer_id']."_".$row['status'];
+
+			$m = "INSERT INTO queue_vin SET id_fight = ?, id_vinner = ?";
+			$r = $db -> prepare($m);
+			$vinner = -1;
+			$r -> bind_param('ii', $_SESSION['id_fight'], $vinner);
+			$r -> execute();
+			$r -> close();
+			$m = "SELECT id_vinner FROM queue_vin WHERE id_fight = ?";
+			$r = $db -> prepare($m);
+			$r -> bind_param('i', $_SESSION['id_fight']);
+			$r -> execute();
+			$r -> bind_result($id_vinner);
+			$r -> fetch();
+			$r -> close();
+			
+
+			if ($id_vinner !== -1) {
+				
 				
 			
 			$figthts = 0; $vins = 0;
@@ -433,7 +491,7 @@ if (isset($_REQUEST['fire2'])) {
 			$r -> close();
 			$figthts = $row['figthts'] + 1;
 			$vins = $row['vins'];
-			$m = 'UPDATE user_param SET figthts = '.$figthts.', vins = '.$vins.', readiness = 0 WHERE id = '.$s_id;
+			$m = 'UPDATE user_param SET figthts = '.$figthts.', vins = '.$vins.', readiness = 0 WHERE id = '.$s_id.' or id = '.$e_id;
 			// echo $m;
 			if($r = $db -> query($m)){
 				// $r -> close();

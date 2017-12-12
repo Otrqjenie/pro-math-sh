@@ -43,7 +43,7 @@ function del_z(a) {
 		data: ({ del_z: a, del_z2: $("select[name='type2']").val()}),
 		dataType: "html",
 		success: function (data) {
-			
+			// console.log(data);
 			data = JSON.parse(data);
 			// console.log(data["razdel"]);
 			if (data["razdel"] == "oge") {

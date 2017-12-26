@@ -164,6 +164,9 @@ if (!defined('proverka')) {
 	</div>
 	<div id="arsenal">
 		<p>Арсенал</p>
+		<p id="go">
+			Попап
+		</p>
 		<div id="ars1" <?php if ($_SESSION['razdel'] !== "oge"){echo "style = display:none";} else{echo "style = display:block";} ?>>
 		
 		<select name = "type2">
@@ -193,6 +196,7 @@ if (!defined('proverka')) {
 	<div id="text_z">
 		
 	</div>
+	
 	<div id="baza">
 		
 		<label>Тип задачи:</label>
@@ -217,3 +221,12 @@ if (!defined('proverka')) {
 	</div>
 
 </div>
+<div class = "popup_fast">
+	<div id="head_popup">
+		
+	</div>
+	<div id="baza_popup">
+		
+	</div>
+</div>
+<div id="met"></div>

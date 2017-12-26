@@ -53,7 +53,7 @@ if (isset($_GET["site"])) {
 			$site = $_GET["site"];
 			$head = '
 <title>Моя страница</title>
-<script type="text/javascript" src = "lib/jquery-2.2.0.js"></script>
+<script type="text/javascript" src = "lib/jquery-3.2.1.js"></script>
 <script type="text/javascript" src = "game_js.js"></script>
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" type="text/css" href="css/game_js.css">

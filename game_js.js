@@ -405,3 +405,19 @@ function go_f(a) {
 	})
 }
 // -----------------------
+// всплывающее окно
+$(document).ready(function () {
+	
+	$("#go").click(function () {
+		$(".popup_fast").addClass("activ");
+		console.log("go");
+	})
+})
+$(document).ready(function () {
+	
+	$("#cloze").click(function () {
+		$(".popup_fast").removeClass("activ");
+		console.log("go");
+	})
+})
+// ---------------

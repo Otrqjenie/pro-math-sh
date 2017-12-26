@@ -109,3 +109,44 @@
 #sh4{
 	display: none;
 }
+.hiden{
+	display: none;
+}
+#go{
+
+}
+.popup_fast{
+	width: 795px;
+	height: 500px;
+	z-index: 100px;
+	background: #006400;
+	color: red;
+	border: 2px solid #777;
+	/*padding: 23px 50px 50px 27px;*/
+	position: absolute;
+	top: 50px;
+	left: 370px;
+	right: 0;
+	/*margin: auto;*/
+	display: none;
+	
+}
+	.activ{
+		display: block;
+	}
+#head_popup{
+	width: 795px;
+	height: 35px;
+	background-color: #777;
+	top: 0;
+	left: 0;
+	position: absolute;
+}
+#met{
+	position: absolute;
+	top: 54px;
+	left: 1200px;
+	width: 10px;
+	height: 10px;
+	background-color: red;
+}

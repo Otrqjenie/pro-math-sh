@@ -58,6 +58,7 @@ if (isset($_GET["site"])) {
 <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" type="text/css" href="css/game_js.css">
 <link rel="stylesheet" type="text/css" href="css/main.css">
+<link href="js/jquery-ui.css" rel="stylesheet">
 ';
 			break;
 
@@ -103,7 +104,9 @@ if (isset($_GET["site"])) {
 <!DOCTYPE html>
 <html>
 <head>
-	<?=$head?></head>
+	<?=$head?>
+	<script type="text/javascript" src="lib/main.js"></script>		
+</head>
 <body>
 	<div id="container">
 		<div  id="header">
@@ -130,6 +133,20 @@ if (isset($_GET["site"])) {
 				</td>
 			</tr>
 		</table>
+	</div>
+	<div id="header2">
+		<div id="game_js" class="main_menu" align="center">
+			<p><b>Моя страница</b></p>
+		</div>
+		<div id="arena" class="main_menu" align="center">
+			<p><b>Арена</b></p>
+		</div>
+		<div id="tr_js" class="main_menu" align="center">
+			<p><b>Бой</b></p>
+		</div>
+		<div id="out" class="main_menu" align="center">
+			<p><b>выход</b></p>
+		</div>
 	</div>
 	<div id="content">
 		<?

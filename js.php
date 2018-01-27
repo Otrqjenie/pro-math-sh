@@ -118,22 +118,102 @@ if (isset($_SESSION['enemy'])) {
 
 
 if (isset($_REQUEST['type'])) {
+	$tip = filter_var($_REQUEST['type'], FILTER_SANITIZE_SPECIAL_CHARS);
+	switch ($tip) {
+		case 'accordeon1':
+			$tip = 'Числа_и_вычисления';
+			break;
+		case 'accordeon2':
+			$tip = 'Алгебраические_выражения';
+			break;
+		case 'accordeon3':
+			$tip = 'Уравнения_и_неравенства';
+			break;
+		case 'accordeon4':
+			$tip = 'Числовые_последовательности';
+			break;
+		case 'accordeon5':
+			$tip = 'Функции';
+			break;
+		case 'accordeon6':
+			$tip = 'Координаты_на_прямой_и_плоскости';
+			break;
+		case 'accordeon7':
+			$tip = 'Геометрия';
+			break;
+		case 'accordeon8':
+			$tip = 'Статистика_и_теория_вероятности';
+			break;		
+		default:
+			# code...
+			break;
+	};
+	// Выборка всех заданий, что есть у игрока в арсенале
+	$a = array();
+	$r = $db -> prepare('SELECT id_rz FROM arsenal WHERE id_user = ?');
+	$r -> bind_param('i', $_SESSION['id']);
+	$r -> execute();
+	$r -> bind_result($id_rz);
+	while ($r -> fetch()) {
+		$a[] = $id_rz;
+	};
+
 	$zadania = $db->prepare('SELECT id, nazvanie FROM zadania WHERE tip = ? and razdel = ?');
 	
-	$zadania->bind_param('ss', $_REQUEST['type'], $_SESSION['razdel']);
+	$zadania->bind_param('ss', $tip, $_SESSION['razdel']);
 	$zadania->execute();
 	$zadania->bind_result($id, $nazvanie);
 	$m = '';
-	while ($zadania->fetch()) {
+	$i = 0;
+	while (($zadania->fetch()) and ($i < 10)) {
 		// Помарка найти как складываются строки
-		$m = $m."<p class = my_sh onmousedown = show_nz(".$id.")>".$nazvanie."</p>";
-	};
-	echo $m;
+		$datchik = array_search($id, $a);
+		if($datchik === false){
+			$m = $m."<p class = my_sh onmousedown = show_nz(".$id.")>".$nazvanie."</p>";
+			$i++;
+		};
+		
 
-}
+		
+	};
+	$zadania -> close();
+	echo $m;
+	// echo $tip;
+
+};
 if ( isset($_REQUEST['type2'])) {
 	$tip = trim($_REQUEST['type2']);
 			// $r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+	$tip = filter_var($_REQUEST['type2'], FILTER_SANITIZE_SPECIAL_CHARS);
+	switch ($tip) {
+		case 'accordeon1':
+			$tip = 'Числа_и_вычисления';
+			break;
+		case 'accordeon2':
+			$tip = 'Алгебраические_выражения';
+			break;
+		case 'accordeon3':
+			$tip = 'Уравнения_и_неравенства';
+			break;
+		case 'accordeon4':
+			$tip = 'Числовые_последовательности';
+			break;
+		case 'accordeon5':
+			$tip = 'Функции';
+			break;
+		case 'accordeon6':
+			$tip = 'Координаты_на_прямой_и_плоскости';
+			break;
+		case 'accordeon7':
+			$tip = 'Геометрия';
+			break;
+		case 'accordeon8':
+			$tip = 'Статистика_и_теория_вероятности';
+			break;		
+		default:
+			# code...
+			break;
+	}
 			$r = $db->prepare("SELECT a.id_rz, z.nazvanie FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE a.id_user = ? and z.tip = ? ORDER BY id_rz");
 			$r->bind_param('is', $_SESSION['id'], $tip);
 			$r->execute();
@@ -677,13 +757,44 @@ if (isset($_REQUEST['del_z'])) {
 	$del2->execute();
 	$del2->bind_result($id_zsh, $nazvanie_zsh);
 	$m = '';
+	$i = 1;
 	while ($del2->fetch()) {
-		$m = $m."<p><span class = 'my_sh' onclick = show_z(".$id_zsh.")>".$nazvanie_zsh." </span><span class = 'my_sh' onclick = del_z(".$id_zsh.")>-</span></p>";
+		$m = $m."<div id = 'sh_p".$i."'><span class = 'my_sh' onclick = show_z(".$id_zsh.")>".$nazvanie_zsh." </span><span class = 'my_sh' onclick = del_z(".$id_zsh.")>-</span></div>";
+		$i++;
 	};
 	$del2->close();
 
 // додедать
-	$tip = $_REQUEST['del_z2'];
+	$tip = filter_var($_REQUEST['del_z2'], FILTER_SANITIZE_SPECIAL_CHARS);
+	switch ($tip) {
+		case 'accordeon1':
+			$tip = 'Числа_и_вычисления';
+			break;
+		case 'accordeon2':
+			$tip = 'Алгебраические_выражения';
+			break;
+		case 'accordeon3':
+			$tip = 'Уравнения_и_неравенства';
+			break;
+		case 'accordeon4':
+			$tip = 'Числовые_последовательности';
+			break;
+		case 'accordeon5':
+			$tip = 'Функции';
+			break;
+		case 'accordeon6':
+			$tip = 'Координаты_на_прямой_и_плоскости';
+			break;
+		case 'accordeon7':
+			$tip = 'Геометрия';
+			break;
+		case 'accordeon8':
+			$tip = 'Статистика_и_теория_вероятности';
+			break;		
+		default:
+			die();
+			break;
+	};
 	// Обновление списка list2
 	// исправлять
 	$r = $db->prepare('SELECT a.id_rz, z.nazvanie FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE a.id_user = ? and z.tip = ?');
@@ -748,12 +859,12 @@ if (isset($_REQUEST['add'])) {
 		$shield1->execute();
 		$shield1->bind_result($count);
 		$shield1->fetch();
+		$shield1->close();
 	};
 	if ($count == 0) {// Проверяем есть ли в списке щита задача
 		// переделать в сложный запрос к бд
-		$shield1->close();
-		$shield2 = $db->prepare("SELECT a.id_user, a.id_rz, z.nazvanie, z.razdel  FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE a.id_user = ? and a.id_rz = ?");
-		$shield2->bind_param('ii', $_SESSION['id'], $_REQUEST['add']);
+		$shield2 = $db->prepare("SELECT a.id_user, a.id_rz, z.nazvanie, z.razdel  FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE (a.id_user = ? and a.id_rz = ?) and z.razdel = ?");
+		$shield2->bind_param('iii', $_SESSION['id'], $_REQUEST['add'], $_SESSION['razdel']);
 		$shield2->execute();
 		$shield2->bind_result($id_user,  $id_rz, $nazvanie, $razdel);
 		$count = 0;
@@ -774,42 +885,76 @@ if (isset($_REQUEST['add'])) {
 			$shield4->execute();
 			$shield4->bind_result($id_rz, $nazvanie);
 			$m = "";
+			$i = 1;
 			while ($shield4->fetch()) {
-				$m = $m."<p><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></p>";
+				$m = $m."<div id = 'sh_p".$i."'><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></div>";
+				$i++;
 			};
 			// echo $m;
 			$shield4->close();
 
 		}
 		else{
-			$shield4 = $db->prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = ? ORDER BY s.id_zsh");
-			$shield4->bind_param('i', $_SESSION['id']);
+			$shield4 = $db->prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = ? and z.razdel = ? ORDER BY s.id_zsh");
+			$shield4->bind_param('ii', $_SESSION['id'], $_SESSION['razdel']);
 			$shield4->execute();
 			$shield4->bind_result($id_rz, $nazvanie);
 			$m = "";
+			$i = 1;
 			while ($shield4->fetch()) {
-				$m = $m."<p><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></p>";
+				$m = $m."<div id = 'sh_p".$i."'><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></div>";
+				$i++;
 			};
-			// echo $m;
 			$shield4->close();
 		}
 		
 	}
 	else{
 		$shield1->close();
-		$shield4 = $db->prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = ? ORDER BY s.id_zsh");
-		$shield4->bind_param('i', $_SESSION['id']);
+		$shield4 = $db->prepare("SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = ? and z.razdel = ? ORDER BY s.id_zsh");
+		$shield4->bind_param('ii', $_SESSION['id'], $_SESSION['razdel']);
 		$shield4->execute();
 		$shield4->bind_result($id_rz, $nazvanie);
 		$m = "";
+		$i = 1;
 		while ($shield4->fetch()) {
-			$m = $m."<p><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></p>";
+			$m = $m."<div id = 'sh_p".$i."'><span class = 'my_sh' onclick = show_z(".$id_rz.")>".$nazvanie." </span><span class = 'my_sh' onclick = del_z(".$id_rz.")>-</span></div>";
+			$i++;
 		};
-		// echo $m;
 		$shield4->close();
 	};
 	// переделать в сложный запрос к бд
-	$tip = $_REQUEST['add2'];
+	$tip = filter_var($_REQUEST['add2'], FILTER_SANITIZE_SPECIAL_CHARS);
+	switch ($tip) {
+		case 'accordeon1':
+			$tip = 'Числа_и_вычисления';
+			break;
+		case 'accordeon2':
+			$tip = 'Алгебраические_выражения';
+			break;
+		case 'accordeon3':
+			$tip = 'Уравнения_и_неравенства';
+			break;
+		case 'accordeon4':
+			$tip = 'Числовые_последовательности';
+			break;
+		case 'accordeon5':
+			$tip = 'Функции';
+			break;
+		case 'accordeon6':
+			$tip = 'Координаты_на_прямой_и_плоскости';
+			break;
+		case 'accordeon7':
+			$tip = 'Геометрия';
+			break;
+		case 'accordeon8':
+			$tip = 'Статистика_и_теория_вероятности';
+			break;		
+		default:
+			die();
+			break;
+	};
+
 	$r = $db->prepare("SELECT a.id_rz, z.nazvanie FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE a.id_user = ? and z.tip = ? ORDER BY a.id_rz");
 	$r->bind_param('is', $_SESSION['id'], $tip);
 	$r->execute();
@@ -943,6 +1088,7 @@ if (isset($_REQUEST['show_nz'])) {
 // обработка ответа к задаче из базы
 
 if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
+	// Ограничить id доступных заданий
  	// echo $_SESSION['id'];
  	$check_nr = trim($_REQUEST['check_nr']);
  	$nomer_z = trim($_REQUEST['nomer_z']);
@@ -957,10 +1103,10 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
 // echo $check_nr." ".$nomer_z;
  	if ($i == 0) {
  		// echo "string2";
- 		$otvet = $db->prepare("SELECT id FROM zadania WHERE id = ? and otvet = ?");
+ 		$otvet = $db->prepare("SELECT id, nazvanie FROM zadania WHERE id = ? and otvet = ?");
  		$otvet->bind_param('is', $nomer_z, $check_nr);
  		$otvet->execute();
- 		$otvet->bind_result($id_rz);
+ 		$otvet->bind_result($id_rz, $nazvanie);
  		$i = 0;
  		while ($otvet->fetch()) {
  			$i++;
@@ -978,10 +1124,13 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  				");
  			$insert_o->bind_param('ii', $id, $id_rz);
  			$insert_o-> execute();
-
+ 			$message = "<p>Поздравляем!!!</p><p>Задание ".$nazvanie." решено верно и добавлено в арсенал!</p>";
+ 			echo json_encode(array("message" => $message));
  		}
  		else{
- 			echo "Неверное";
+ 			$message = "<p>Неверно</p>";
+ 			echo json_encode(array("message" => $message));
+ 			
  		}
  	}
 	
@@ -1017,7 +1166,8 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  	$r->bind_param('si', $_SESSION['razdel'], $_SESSION['id']);
  	$r->execute();
  	$r->close();
- 	echo "red";
+ 	$color = "#FA8072";
+ 	echo json_encode(array("color" => $color, "razdel" => $_SESSION['razdel']));
  };
  if (isset($_REQUEST['new_f'])) {
  	// Ограничиваем количество приглашений

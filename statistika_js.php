@@ -134,7 +134,7 @@ if (isset($_GET['time'])) {
 
 // Работа с графиком
 if (isset($_GET['gr'])) {
-	$m = 'SELECT * FROM statistika WHERE id > 204 ORDER BY id';
+	$m = 'SELECT * FROM statistika WHERE id > 221 ORDER BY id';
 	$r = mysql_qw($m) or die(mysql_error());
 	$left = 50;
 	$i = 0;

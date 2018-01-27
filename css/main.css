@@ -12,6 +12,7 @@ body{
 #container{
 	width: 1200px;
 	margin: 0 auto;
+	position: relative;
 }
 #header{
 	margin: 0 auto;
@@ -45,4 +46,55 @@ thead{
 }
 a{
 	color: #696969;
+}
+#header2{
+	width: 1200px;
+	height: 55px;
+	background-color: #B0C4DE;
+	position: absolute;
+	top: 150px;
+	left: 0px;
+	color: #fff;
+	border-radius: 0 0 10px 10px;
+	z-index: 132;
+}
+#game_js{
+	position: absolute;
+	width: 300px;
+	height: 55px;
+	top: 0px;
+	left: 0px;
+	background-color: green;
+	border-radius: 0 0 0 10px;
+	cursor: pointer;
+}
+#arena{
+	position: absolute;
+	width: 300px;
+	height: 55px;
+	top: 0px;
+	left: 300px;
+	background-color: grey;
+	/*border-radius: 0 0 0 10px;*/
+	cursor: pointer;
+}
+#tr_js{
+	position: absolute;
+	width: 300px;
+	height: 55px;
+	top: 0px;
+	left: 600px;
+	background-color: green;
+	/*border-radius: 0 0 0 10px;*/
+	cursor: pointer;
+}
+#out{
+	position: absolute;
+	width: 300px;
+	height: 55px;
+	top: 0px;
+	left: 900px;
+	background-color: grey;
+	border-radius: 0 0 10px 0;
+	cursor: pointer;
 }

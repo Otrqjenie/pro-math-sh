@@ -17,27 +17,51 @@
 }
 #imya{
 	position: absolute;
-	top: 50px;
-	left: 40px;
-	width: 290px;
+	top: 0px;
+	left: 0px;
+	width: 280px;
 	height: 50px;
-	background-color: #DCDCDC;
+	background-color: #B0C4DE;
+	border-radius: 10px;
 }
+#vkladki{
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	width: 280px;
+	height: 50px;
+	background-color: #B0C4DE;
+	border-radius: 10px;
+}
+
 #shield_cont{
 	position: absolute;
 	top: 100px;
-	left: 50px;
-	width: 270px;
+	left: 20px;
+	width: 240px;
 	height: 250px;
-	background-color: #DCDCDC;
+	/*background-color: #B0C4DE;*/
+	background-image: url( http://new/imag/sh1.png);
+	background-size: 100% 100%;
+	/*border-radius: 10px;*/
 }
 #arsenal{
 	position: absolute;
-	top: 390px;
-	left: 50px;
-	width: 270px;
+	top: 350px;
+	left: 0px;
+	width: 280px;
 	height: 200px;
-	background-color: #DCDCDC;
+	background-color: #B0C4DE;
+	border-radius: 10px;
+}
+#left_conteiner{
+	position: absolute;
+	left: 50px;
+	top: 50px;
+	width: 280px;
+	height: 550px;
+	background-color: #B0C4DE;
+	border-radius: 10px;
 }
 #baza{
 	position: absolute;
@@ -46,8 +70,10 @@
 	width: 270px;
 	height: 250px;
 	background-color: #DCDCDC;
+	display: none;
 }
 #text_z{
+	display: none;
 	position: absolute;
 	top: 100px;
 	left: 370px;
@@ -72,20 +98,36 @@
 
 }
 #oge{
+	position: absolute;
 	top: 0px;
 	left: 0px;
+	width: 70px;
+	height: 50px;
+	background-color: #B0C4DE;
 }
 #ege{
+	position: absolute;
 	top: 0px;
-	left: 80px;
+	left: 70px;
+	width: 70px;
+	height: 50px;
+	background-color: #B0C4DE;
 }
 #sh_f{
+	position: absolute;
 	top: 0px;
-	left: 160px;
+	left: 140px;
+	width: 70px;
+	height: 50px;
+	background-color: #B0C4DE;
 }
 #U_f{
+	position: absolute;
 	top: 0px;
-	left: 240px;
+	left: 210px;
+	width: 70px;
+	height: 50px;
+	background-color: #B0C4DE;
 }
 #tab{
 	width: 320px;
@@ -115,38 +157,217 @@
 #go{
 
 }
-.popup_fast{
+
+#doska{
 	width: 795px;
-	height: 500px;
-	z-index: 100px;
-	background: #006400;
-	color: red;
-	border: 2px solid #777;
+	height: 550px;
+	/*z-index: 100px;*/
+	background: #B0C4DE;
+	/*color: red;*/
+	border-radius: 10px;
+	/*border: 2px solid #777;*/
 	/*padding: 23px 50px 50px 27px;*/
 	position: absolute;
 	top: 50px;
 	left: 370px;
 	right: 0;
-	/*margin: auto;*/
-	display: none;
-	
 }
 	.activ{
 		display: block;
 	}
-#head_popup{
+#head_doski{
 	width: 795px;
 	height: 35px;
-	background-color: #777;
+	background-color: #B0C4DE;
 	top: 0;
 	left: 0;
 	position: absolute;
+	border-radius: 10px 10px 0 0;
 }
-#met{
+#pole_doski{
 	position: absolute;
-	top: 54px;
-	left: 1200px;
-	width: 10px;
-	height: 10px;
-	background-color: red;
+	top: 35px;
+	left: 5px;
+	width: 785px;
+	height: 510px;
+	background-color: white;
+	/*z-index: 100;*/
+	border-radius: 0 0 10px 10px;
+}
+#pole_zadanii{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 510px;
+	width: 150px;
+	background-color: #a6bdd7;
+	border-radius: 0 0 0 10px;
+}
+#pole_texta{
+	position: absolute;
+	top: 0;
+	left: 150px;
+	height: 510px;
+	width: 635px;
+	background-color: #ffffff;
+	border-radius: 0 0 10px 0;
+}
+.message{
+	position: absolute;
+	left: 275px;
+	top: 100px;
+	width: 235px;
+	height: 200px;
+	/*background-color: #D7BDA6;*/
+	background-color: #B0C4DE;
+	z-index: 112;
+	border-radius: 10px 10px 10px 10px;
+	display: none;
+}
+.message_sh{
+	display: block;
+}
+#head_message{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 235px;
+	height: 30px;
+	background-color: #B0C4DE;
+	border-radius: 10px 10px 0px 0px;
+
+}
+#message_text{
+	position: absolute;
+	left: 3px;
+	top: 30px;
+	width: 229px;
+	height: 167px;
+	border-radius: 0 0 10px 10px;
+	background-color: #ffffff;
+}
+#message_box{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 229px;
+	height: 120px;
+	background-color: #fff;
+}
+#message_close{
+	position: absolute;
+	cursor: pointer;
+	width: 59px;
+	height: 30px;
+	top: 123px;
+	left: 85px;
+	background-color: #B0C4DE;
+	border-radius: 10px 10px 10px 10px;
+}
+#scrit{
+	margin-top: 5px;
+}
+/*#shield{
+	position: absolute;
+	top: 50px;
+	left: 100px;
+}*/
+#sh_p1{
+	position: absolute;
+	top: 30px;
+	left: 45px;
+	width: 150px;
+	background-color: #C0C0C0;
+}
+#sh_p2{
+	position: absolute;
+	top: 60px;
+	left: 45px;
+	width: 150px;
+	background-color: #C0C0C0;
+}
+#sh_p3{
+	position: absolute;
+	top: 90px;
+	left: 45px;
+	width: 150px;
+	background-color: #C0C0C0;
+}
+#sh_p4{
+	position: absolute;
+	top: 120px;
+	left: 45px;
+	width: 150px;
+	background-color: #C0C0C0;
+}
+#sh_p5{
+	position: absolute;
+	top: 150px;
+	left: 45px;
+	width: 150px;
+	background-color: #C0C0C0;
+}
+.accordeon{
+	width: 260px;
+	/*margin: 100px;*/
+}
+.accordeon_input{
+	/*position: absolute;
+	left: 0px;*/
+	/*top: 5px;*/
+
+	position: relative;
+}
+/*.accordeon_inner{
+	display: none;
+}*/
+#accc{
+	width: 280px;
+}
+.accordeon_input{
+	left: 0px;
+	width: 224px;
+	height: 19px;
+	background-color: #C0C0C0;
+	cursor: pointer;
+}
+.accordeon_ars{
+	left: 0px;
+	width: 224px;
+	height: 19px;
+	cursor: pointer;
+	position: relative;
+	background-color: #C0C0C0;
+	
+}
+.actif{
+	background-color: #FA8072;
+}
+.actif_b{
+	background-color: #FA8072;
+}
+
+#accordeon1{
+	top: 0px;
+}
+#accordeon2{
+	top: 10px;
+}
+#accordeon3{
+	top: 20px;
+}
+#accordeon4{
+	top: 30px;
+}
+#accordeon5{
+	top: 40px;
+}
+#accordeon6{
+	top: 50px;
+}
+#accordeon7{
+	top: 60px;
+}
+#accordeon8{
+	top: 70px;
 }

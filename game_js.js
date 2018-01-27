@@ -10,6 +10,7 @@ $(document).ready(function () {
 
 	})
 });
+// заменить
 $(document).ready(function () {
 	$("select[name='type2']").bind("change", function () {
 		$.get("js.php", 
@@ -22,6 +23,58 @@ $(document).ready(function () {
 
 	})
 });
+// ------------------
+
+$(document).ready(function () {
+	$("#ars_in").on("mousedown", ".accordeon_ars",
+		function () {
+			var n = this.id,
+			// e = $(this).attr('class'),
+			$this = $(this),
+			list1 = $this.prevAll(),
+			list2 = $this.nextAll();
+			list1.removeClass('actif');
+			list2.removeClass('actif');
+			$this.addClass('actif');
+			$.ajax({
+				url: "js.php",
+				type: "GET",
+				data:({ type2: n}),
+				dataType: "html",
+				success: function (data) {
+					$("#pole_zadanii").empty();
+					$("#pole_zadanii").append(data);
+					// console.log(data);
+				}
+			})
+		}
+		)
+})
+$(document).ready(function () {
+	$("#accc").on("mousedown", ".accordeon_input",
+		function () {
+			var n = this.id,			// e = $(this).attr('class'),
+			$this = $(this),
+			list1 = $this.prevAll(),
+			list2 = $this.nextAll();
+			console.log(n);
+			list1.removeClass('actif_b');
+			list2.removeClass('actif_b');
+			$this.addClass('actif_b');
+			$.ajax({
+				url: "js.php",
+				type: "GET",
+				data:({ type: n}),
+				dataType: "html",
+				success: function (data) {
+					$("#pole_zadanii").empty();
+					$("#pole_zadanii").append(data);
+					console.log(data);
+				}
+			})
+		}
+		)
+})
 //функция для вывода условия задачи щита
 function show_z(a) {
 	$.ajax({
@@ -30,49 +83,50 @@ function show_z(a) {
 		data: ({ show_z: a}),
 		dataType: "html",
 		success: function (data) {
-			$("#text_z").empty();
-			$("#text_z").append(data);
+			$("#pole_texta").empty();
+			$("#pole_texta").append(data);
 		}
 	});
 
 };
 function del_z(a) {
+	var v = $(".actif").attr('id');
 	$.ajax({
 		url: "js.php",
 		type: "GET",
-		data: ({ del_z: a, del_z2: $("select[name='type2']").val()}),
+		data: ({ del_z: a, del_z2: v}),
 		dataType: "html",
 		success: function (data) {
 			// console.log(data);
 			data = JSON.parse(data);
-			// console.log(data["razdel"]);
+			console.log(data);
 			if (data["razdel"] == "oge") {
 				$("#sh1").empty();
 				$("#sh1").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "ege") {
 				$("#sh2").empty();
 				$("#sh2").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "sh_f") {
 				$("#sh3").empty();
 				$("#sh3").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "U_f") {
 				$("#sh4").empty();
 				$("#sh4").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else{
 
@@ -87,41 +141,42 @@ function del_z(a) {
 // ------------------------------------
 // функция для добавления задачи в щит
 function add(a) {
+	var v = $(".actif").attr('id');
 	$.ajax({
 		url: "js.php",
 		type: "GET",
-		data: ({ add: a, add2: $("select[name='type2']").val()}),
+		data: ({ add: a, add2: v}),
 		dataType: "html",
 		success: function (data) {
-			// console.log(data);
 			data = JSON.parse(data);
+			console.log(data["razdel"]);
 			if (data["razdel"] == "oge") {
 				$("#sh1").empty();
 				$("#sh1").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "ege") {
 				$("#sh2").empty();
 				$("#sh2").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "sh_f") {
 				$("#sh3").empty();
 				$("#sh3").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else if (data["razdel"] == "U_f") {
 				$("#sh4").empty();
 				$("#sh4").append(data["shield"]);
 
-				$("#list2").empty();
-				$("#list2").append(data["arsenal"]);
+				$("#pole_zadanii").empty();
+				$("#pole_zadanii").append(data["arsenal"]);
 			}
 			else{
 
@@ -168,7 +223,15 @@ $(document).ready(
 			)
 	}
 	);
-
+$(document).ready(
+	function () {
+		$("#message_close").bind('click',
+			function () {
+				$(".message").removeClass("message_sh");
+			}
+			)
+	}
+	);
 
 // $('#panel_in1').click(function () {
 // 	// $('#create').show('slow');
@@ -184,8 +247,8 @@ function show_nz(a) {
 		data: ({ show_nz: a}),
 		dataType: "html",
 		success: function (data) {
-			$("#text_z").empty();
-			$("#text_z").append(data);
+			$("#pole_texta").empty();
+			$("#pole_texta").append(data);
 		}
 	})
 }
@@ -198,14 +261,17 @@ function check_nr() {
 	data: ({nomer_z: $("#nomer_z").val(), check_nr: $("#check_nr").val()}),
 	dataType: "html",
 	success: function (data) {
-		
+		console.log(data);
 		// console.log($("#check_nr").val())
-		$("#text_z").empty();
-		$("#text_z").append(data);
+		data = JSON.parse(data);
+		$("#message_box").empty();
+		$(".message").addClass("message_sh");
+		$("#message_box").append(data["message"]);
 	}
 	})
 	
 }
+
 // -------------------------------------------
 //ползунок с минутами на арене
 $(document).ready(
@@ -237,19 +303,21 @@ $(document).ready(
 					dataType: "html",
 					success: function (data) {
 						//можно улучшить 
-						$("#oge").css({"background-color": data });
+						console.log(data);
+						data = JSON.parse(data);
+						$("#oge").css({"background-color": data["color"] });
 						$("#sh1").show();
 						$("#ars1").show();
 						$("#baza1").show();
-						$("#ege").css({"background-color": "#DCDCDC"});
+						$("#ege").css({"background-color": "#B0C4DE"});
 						$("#sh2").hide();
 						$("#ars2").hide();
 						$("#baza2").hide();
-						$("#sh_f").css({"background-color": "#DCDCDC"});
+						$("#sh_f").css({"background-color": "#B0C4DE"});
 						$("#sh3").hide();
 						$("#ars3").hide();
 						$("#baza3").hide();
-						$("#U_f").css({"background-color": "#DCDCDC"});
+						$("#U_f").css({"background-color": "#B0C4DE"});
 						$("#sh4").hide();
 						$("#ars4").hide();
 						$("#baza4").hide();
@@ -273,19 +341,20 @@ $(document).ready(
 					dataType: "html",
 					success: function (data) {
 						//можно улучшить
-						$("#oge").css({"background-color": "#DCDCDC" });
+						data = JSON.parse(data);
+						$("#oge").css({"background-color": "#B0C4DE" });
 						$("#sh1").hide();
 						$("#ars1").hide();
 						$("#baza1").hide();
-						$("#ege").css({"background-color": data});
+						$("#ege").css({"background-color": data["color"]});
 						$("#sh2").show();
 						$("#ars2").show();
 						$("#baza2").show();
-						$("#sh_f").css({"background-color": "#DCDCDC"});
+						$("#sh_f").css({"background-color": "#B0C4DE"});
 						$("#sh3").hide();
 						$("#ars3").hide();
 						$("#baza3").hide();
-						$("#U_f").css({"background-color": "#DCDCDC"});
+						$("#U_f").css({"background-color": "#B0C4DE"});
 						$("#sh4").hide();
 						$("#ars4").hide();
 						$("#baza4").hide();
@@ -310,19 +379,20 @@ $(document).ready(
 					dataType: "html",
 					success: function (data) {
 						//можно улучшить
-						$("#oge").css({"background-color": "#DCDCDC" });
+						data = JSON.parse(data);
+						$("#oge").css({"background-color": "#B0C4DE" });
 						$("#sh1").hide();
 						$("#ars1").hide();
 						$("#baza1").hide();
-						$("#ege").css({"background-color": "#DCDCDC"});
+						$("#ege").css({"background-color": "#B0C4DE"});
 						$("#sh2").hide();
 						$("#ars2").hide();
 						$("#baza2").hide();
-						$("#sh_f").css({"background-color": data});
+						$("#sh_f").css({"background-color": data["color"]});
 						$("#sh3").show();
 						$("#ars3").show();
 						$("#baza3").show();
-						$("#U_f").css({"background-color": "#DCDCDC"});
+						$("#U_f").css({"background-color": "#B0C4DE"});
 						$("#sh4").hide();
 						$("#ars4").hide();
 						$("#baza4").hide();
@@ -346,19 +416,20 @@ $(document).ready(
 					dataType: "html",
 					success: function (data) {
 						//можно улучшить
-						$("#oge").css({"background-color": "#DCDCDC" });
+						data = JSON.parse(data);
+						$("#oge").css({"background-color": "#B0C4DE" });
 						$("#sh1").hide();
 						$("#ars1").hide();
 						$("#baza1").hide();
-						$("#ege").css({"background-color": "#DCDCDC"});
+						$("#ege").css({"background-color": "#B0C4DE"});
 						$("#sh2").hide();
 						$("#ars2").hide();
 						$("#baza2").hide();
-						$("#sh_f").css({"background-color": "#DCDCDC"});
+						$("#sh_f").css({"background-color": "#B0C4DE"});
 						$("#sh3").hide();
 						$("#ars3").hide();
 						$("#baza3").hide();
-						$("#U_f").css({"background-color": data});
+						$("#U_f").css({"background-color": data["color"]});
 						$("#sh4").show();
 						$("#ars4").show();
 						$("#baza4").show();

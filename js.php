@@ -1068,7 +1068,9 @@ if (isset($_REQUEST['show_nz'])) {
 		// $t = getdate($ostatok);
 		$ostatok_str = ' (Временно недоступно)';
 	};
-	$m1 = "<p>Задание: ".$nazvanie.$ostatok_str."</p><p>".$soderjanie."</p>";
+	$show_nz = filter_var($_REQUEST['show_nz'], FILTER_VALIDATE_INT);
+	$mist = "<ins class = 'mist' id = '".$show_nz."'>Сообщить об ошибке</ins>";
+	$m1 = "<p>Задание: ".$nazvanie.$ostatok_str.$mist."</p><p>".$soderjanie."</p>";
 	$m2 = "
 		<input type = 'text' id = 'check_nr'><br>
 		<input type = 'hidden' id = 'nomer_z' value = '".$id."'>
@@ -1077,7 +1079,8 @@ if (isset($_REQUEST['show_nz'])) {
 	";
 	$m3 = "<p><img src = 'imag/".$img."'></p>";
 	$m = $m1.$m2.$m3;
-	echo $m;
+	// echo $m;
+	echo json_encode(array("m"=> $m));
 }
 
 // -----------------------------------
@@ -1393,4 +1396,5 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  	// -------------------------------
  };
  // --------------------------
+ 
 ?>

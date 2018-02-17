@@ -249,8 +249,9 @@ function show_nz(a) {
 		data: ({ show_nz: a}),
 		dataType: "html",
 		success: function (data) {
+			data = JSON.parse(data);
 			$("#pole_texta").empty();
-			$("#pole_texta").append(data);
+			$("#pole_texta").append(data['m']);
 			var math = document.getElementById("pole_texta");
 			MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
 		}
@@ -522,3 +523,20 @@ $(document).ready(function () {
 		)
 })
 //-----------------------------------
+$(document).ready(function () {
+	$("#pole_texta").on("click", ".mist",
+		function () {
+		var n = this.id;
+		$.ajax({
+			url: "js.php",
+			type: "POST",
+			data: ({mist: n}),
+			dataType: "html",
+			success: function (data) {
+				console.log(data);
+			}
+		})	
+		}
+		)
+	
+})

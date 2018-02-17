@@ -1,37 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Испытание: итоговая таблица</title>
-</head>
-<body>
-<h1>Итоговая таблица</h1>
-<table>
-<tr>
-<th class="column-1" style="width: 33%;">Город</th> 
-<th class="row-1" style="width: 33%;"> Посещений</th> 
-<th class="column-3" style="width: 33%;">%</th>
-</tr>
-<tr>
-<td>СПб</td> 
-<td class="column-2">199</td> 
-<td class="column-3">65.12</td>
-</tr>
-<tr class="row-2">
-<td>Москва</td> 
-<td class="column-2">69</td> 
-<td class="column-3">21.3</td>
-</tr>
-<tr>
-<td>Киев</td> 
-<td class="column-2">5</td> 
-<td class="column-3">8</td>
-</tr>
-<tr class="row-2">
-<td colspan="2">Посещений за весь период</td>
-<td class="column-3">273</td>
-</tr>
-</table>
+<?php
+define('proverka', 84);
+// require_once "connect2.php";
+require_once 'lib/connect.php';
+// require_once "lib/request.php";
+session_start();
+header("Content-Type: text/html; charset=utf-8");
 
-</body>
-</html>
+
+$m = 'SELECT * FROM shield WHERE id_user = '.$_SESSION['id'];
+				$r = $db -> query($m);
+				// $r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+				$j = 0;
+				$row2 = $r -> fetch_array(MYSQL_ASSOC);
+				// $r -> free();
+				print_r($row2);
+				
+				$r -> close();
+				// for ($data2 = array(); $row2 = fetch_array(MYSQL_ASSOC) ; $data2[] = $row2) { 
+				// 	$str = $str."<p>".$row2['nazvanie_zsh']."</p>";
+				// 	$j++;
+				// };
+
+
+
+
+
+
+
+
+
+?>

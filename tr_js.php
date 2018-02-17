@@ -176,12 +176,16 @@ if (isset($_GET['otvet'])) {
 </div>
 
 <?
+		// вводим ограничение на раздел из боя
+		$r = $db -> prepare("SELECT razdel FROM fight WHERE id_fight = ?");
+		$r -> bind_param('i', $_SESSION['id_fight']);
+		$r -> execute();
+		$r -> bind_result($razdel);
+		$r -> fetch();
+		$r -> close();
 		$s_id = filter_var($_SESSION[id], FILTER_VALIDATE_INT);
-		$m = 'SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = '.$s_id.' ORDER BY s.id_zsh';
-		// $r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
+		$m = 'SELECT s.id_zsh, z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = '.$s_id.' and z.razdel = "'.$razdel.'" ORDER BY s.id_zsh';
 		$r = $db -> query($m);
-		// $r -> bind_param('i', $_SESSION['id']);
-		// $r -> execute();
 		echo "<div id = 'shield'> Ваш щит";
 		for ($data = array(); $row = $r -> fetch_array(MYSQL_ASSOC); $data[] = $row) { 
 			echo " <p >".$row['nazvanie']."</p> ";

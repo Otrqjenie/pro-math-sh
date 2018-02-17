@@ -85,6 +85,8 @@ function show_z(a) {
 		success: function (data) {
 			$("#pole_texta").empty();
 			$("#pole_texta").append(data);
+			var math = document.getElementById("pole_texta");
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
 		}
 	});
 
@@ -249,6 +251,8 @@ function show_nz(a) {
 		success: function (data) {
 			$("#pole_texta").empty();
 			$("#pole_texta").append(data);
+			var math = document.getElementById("pole_texta");
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub,math]);
 		}
 	})
 }
@@ -261,9 +265,10 @@ function check_nr() {
 	data: ({nomer_z: $("#nomer_z").val(), check_nr: $("#check_nr").val()}),
 	dataType: "html",
 	success: function (data) {
-		console.log(data);
+		// console.log(data);
 		// console.log($("#check_nr").val())
 		data = JSON.parse(data);
+		console.log(data);
 		$("#message_box").empty();
 		$(".message").addClass("message_sh");
 		$("#message_box").append(data["message"]);
@@ -492,3 +497,28 @@ $(document).ready(function () {
 	})
 })
 // ---------------
+// Обработчики для перелистывания страниц с заданиями
+$(document).ready(function () {
+	$("#pole_zadanii").on("click", ".listanie",
+		function () {
+			var n = this.id;
+			$.ajax({
+				url: "js.php",
+				type: "POST",
+				data: ({listanie: n}),
+				dataType: "html",
+				success: function (data) {
+					// console.log(data);
+					data = JSON.parse(data);
+					$("#pole_zadanii").empty();
+					$("#pole_zadanii").append(data["m"]);
+					// $("#str").empty();
+					// $("#str").append(data["str"]);
+					// console.log(data["str"]);
+				}
+			})
+		}
+
+		)
+})
+//-----------------------------------

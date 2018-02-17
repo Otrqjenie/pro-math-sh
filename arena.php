@@ -8,26 +8,26 @@ if (!defined('proverka')) {
  ?>
 <div id="tab">
 	<div id="oge" class="tab" <? if ($_SESSION['razdel'] == "oge") {
-		echo "style='background-color:red'";
+		echo "style='background-color:#FA8072'";
 	}; ?>
 		>
 		<p>ОГЭ</p>
 	</div>
 
 	<div id="ege" class="tab" <? if ($_SESSION['razdel'] == "ege") {
-		echo "style='background-color:red'";
+		echo "style='background-color:#FA8072'";
 	}; ?>
 		>
 		<p>ЕГЭ</p>
 	</div>
 	<div id="sh_f" class="tab" <? if ($_SESSION['razdel'] == "sh_f") {
-		echo "style='background-color:red'";
+		echo "style='background-color:#FA8072'";
 	}; ?>
 		>
 		<p>ШК_св</p>
 	</div>
 	<div id="U_f" class="tab" <? if ($_SESSION['razdel'] == "U_f") {
-		echo "style='background-color:red'";
+		echo "style='background-color:#FA8072'";
 	}; ?>
 		>
 		<p>ВУЗ</p>

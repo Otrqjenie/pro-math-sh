@@ -42,15 +42,17 @@ if($captcha == $s_captcha){
         $m = 'SELECT * FROM user WHERE login = ?';
         $r = mysql_qw($m, $e['login']);
         $row = mysql_fetch_assoc($r) or die(mysql_error());
-        mysql_qw('INSERT INTO user_param SET
+        $m = "INSERT INTO user_param SET
             id =?,
             figthts = 0,
             vins = 0,
             count = 0,
             activity = ?,
-            readiness = 0
+            readiness = 0,
+            razdel = 'oge'
 
-            ', $row['id'], time()
+            ";
+        mysql_qw($m, $row['id'], time()
             ) or die(mysql_error());
 
         setcookie('id', $row['id'], time() +   12960000);
@@ -59,7 +61,7 @@ if($captcha == $s_captcha){
         $_SESSION['hesh'] = $hesh;
         $_SESSION['imya'] = $row['imya'];
         $_SESSION['familiya'] = $row['familiya'];
-        Header("Location: game_js.php");
+        Header("Location: index.php?site=game_js");
 
     };
 
@@ -83,25 +85,40 @@ require_once "captcha.php";
         $(document).ready(function () {
             $("#captcha .img").click(function() {
                 $(this).prev().prop('checked', true);
+                var n = this.id, a = "#a"+n;
+                $(".mayk").removeClass("kraska");
+                $(a).addClass("kraska");
             })
         })
     </script>
+        <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-<a href="<?=$_SERVER['SCRIPT_NAME']?>">Войти</a>
-<form action = "<?=$_SERVER['SCRIPT_NAME']?>">
-            логин:</br>
-            <input type = "text" name = "e[login]"></br>
-            пароль:</br>
-            <input type = "password" name = "e[parol]"></br>
-            имя:</br>
-            <input type = "text" name = "e[imya]"></br>
-            фамилия:</br>
-            <input type = "text" name = "e[familiya]"></br>
-            <?=$captcha?>
-            <input type = "submit" name = "reg">
-            
-</form>
+<div id="reg_conteiner">
+    <a href="<?=$_SERVER['SCRIPT_NAME']?>">Войти</a>
+    <form action = "<?=$_SERVER['SCRIPT_NAME']?>">
+        <div id="form_conteiner">
+                логин:</br>
+                <input type = "text" name = "e[login]"></br>
+                пароль:</br>
+                <input type = "password" name = "e[parol]"></br>
+                имя:</br>
+                <input type = "text" name = "e[imya]"></br>
+                фамилия:</br>
+                <input type = "text" name = "e[familiya]"></br>
+        </div>
+        <div id="cont_captcha">
+                <?=$captcha?>
+        </div>
+        <div id="a1" class="mayk"></div>
+        <div id="a2" class="mayk"></div>
+        <div id="a3" class="mayk"></div>
+        <div id="a4" class="mayk"></div>
+        <div id="a5" class="mayk"></div>
+                <input id="go" type = "submit" name = "reg">
+                
+    </form>
+</div>
 </body>
 </html>
 
@@ -129,7 +146,7 @@ else{
                 $_SESSION['hesh'] = $row['hesh'];
                 $_SESSION['imya'] = $row['imya'];
                 $_SESSION['familiya'] = $row['familiya'];
-                Header("Location: game_js.php");
+                Header("Location: index.php?site=game_js");
             }
             else {
                 echo "Неправильно указан логин или пароль";

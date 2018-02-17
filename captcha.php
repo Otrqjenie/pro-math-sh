@@ -25,9 +25,11 @@ shuffle_assoc($elements);
 $base = rand();
 $captcha = 'Выберите браузер:<strong>'.$elements[$rand].'</strong>';
 $captcha .= '<div id = "captcha">';
+$i = 0;
 foreach ($elements as $key => $value) {
+    $i++;
     $captcha .= '<input type = "radio" name = "captcha" value = "'.md5($value . $base).'" style = "display:none">';
-    $captcha .= "<div  class = \"img\" style = \"background: url('imag/{$key}') bottom left no-repeat; width: 180px; height: 180px; float: left; cursor: pointer;\"></div>";
+    $captcha .= "<div id = \"".$i."\" class = \"img\" style = \"background: url('imag/{$key}') bottom left no-repeat; background-size: 100% 100%; width: 80px; height: 80px; float: left; cursor: pointer;\"></div>";
 }
 $captcha .= '<div style = "clear: both"></div>';
 $captcha .= '</div>';

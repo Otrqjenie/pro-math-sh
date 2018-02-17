@@ -371,3 +371,45 @@
 #accordeon8{
 	top: 70px;
 }
+#pole_zadanii_cont{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 420px;
+	width: 150px;
+}
+
+#left_list{
+	position: absolute;
+	top: 440px;
+	left: 11px;
+	height: 30px;
+	width: 40px;
+	background-image: url( http://new/imag/left.png);
+	background-size: 100% 100%;
+	/*background-color: green;*/
+	cursor: pointer;
+}
+#stranica{
+	position: absolute;
+	top: 440px;
+	left: 55px;
+	height: 30px;
+	width: 40px;
+	/*background-color: #fff;*/
+	/*background-color: red;*/
+}
+#rightwards_list{
+	cursor: pointer;
+	position: absolute;
+	top: 440px;
+	left: 99px;
+	height: 30px;
+	width: 40px;
+	background-image: url( http://new/imag/right.png);
+	background-size: 100% 100%;
+	/*background-color: green;*/
+}
+#str{
+	margin-top: 5px;
+}

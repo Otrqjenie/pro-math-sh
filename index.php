@@ -39,9 +39,12 @@ if (!isset($_SESSION['razdel'])) {
 		$r->fetch();
 		$_SESSION['razdel'] = $razdel;
 		$r->close();
+		if ($razdel === null) {
+			$_SESSION['razdel'] = 'oge';
+		};
 	};
 
-if (isset($_REQUEST['out'])) {
+if ($_REQUEST['site'] == 'out') {
 	setcookie('id');
 	setcookie('hesh');
 	session_destroy();
@@ -109,31 +112,7 @@ if (isset($_GET["site"])) {
 </head>
 <body>
 	<div id="container">
-		<div  id="header">
-			<table width = "1200" border  = "1" id="table">
-				<tr>
-					<td width="25%" >
-						<a href="index.php?site=game_js">Моя страница</a>
-					</td>
-					<!-- 	<td>
-					<a href="index.php?site=game_js_online">Игроки онлайн</a>
-				</td>
-				<td>
-					<a href="index.php?site=game_js_invitation">Приглашения</a>
-				</td>
-				-->
-				<td width="25%" >
-					<a href="index.php?site=arena">Арена</a>
-				</td>
-				<td width="25%" >
-					<a href = "index.php?site=tr_js">Текущий бой</a>
-				</td>
-				<td width="25%" >
-					<a href="<?=$_SERVER['SCRIPT_NAME']?>?out">Выйти</a>
-				</td>
-			</tr>
-		</table>
-	</div>
+		
 	<div id="header2">
 		<div id="game_js" class="main_menu" align="center">
 			<p><b>Моя страница</b></p>
@@ -145,7 +124,7 @@ if (isset($_GET["site"])) {
 			<p><b>Бой</b></p>
 		</div>
 		<div id="out" class="main_menu" align="center">
-			<p><b>выход</b></p>
+			<p><b>Выход</b></p>
 		</div>
 	</div>
 	<div id="content">

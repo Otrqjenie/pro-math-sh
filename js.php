@@ -118,6 +118,7 @@ if (isset($_SESSION['enemy'])) {
 
 
 if (isset($_REQUEST['type'])) {
+	$_SESSION['stranica'] = 1;
 	$tip = filter_var($_REQUEST['type'], FILTER_SANITIZE_SPECIAL_CHARS);
 	switch ($tip) {
 		case 'accordeon1':
@@ -145,9 +146,10 @@ if (isset($_REQUEST['type'])) {
 			$tip = 'Статистика_и_теория_вероятности';
 			break;		
 		default:
-			# code...
+			die();
 			break;
 	};
+	$_SESSION['tip_nz'] = $tip;
 	// Выборка всех заданий, что есть у игрока в арсенале
 	$a = array();
 	$r = $db -> prepare('SELECT id_rz FROM arsenal WHERE id_user = ?');
@@ -157,6 +159,10 @@ if (isset($_REQUEST['type'])) {
 	while ($r -> fetch()) {
 		$a[] = $id_rz;
 	};
+	$r -> close();
+	// Считаем сколько страниц
+	// $r = $
+
 
 	$zadania = $db->prepare('SELECT id, nazvanie FROM zadania WHERE tip = ? and razdel = ?');
 	
@@ -165,7 +171,7 @@ if (isset($_REQUEST['type'])) {
 	$zadania->bind_result($id, $nazvanie);
 	$m = '';
 	$i = 0;
-	while (($zadania->fetch()) and ($i < 10)) {
+	while (($zadania->fetch()) and ($i < 12)) {
 		// Помарка найти как складываются строки
 		$datchik = array_search($id, $a);
 		if($datchik === false){
@@ -176,8 +182,10 @@ if (isset($_REQUEST['type'])) {
 
 		
 	};
+	$m = "<div id = 'pole_zadanii_cont'>".$m."</div><div class = 'listanie' id = 'left_list'></div><div id = 'stranica'><p id = 'str'>1</p></div><div class = 'listanie' id = 'rightwards_list'></div>";
 	$zadania -> close();
 	echo $m;
+	// echo json_encode(array());
 	// echo $tip;
 
 };
@@ -211,9 +219,10 @@ if ( isset($_REQUEST['type2'])) {
 			$tip = 'Статистика_и_теория_вероятности';
 			break;		
 		default:
-			# code...
+			die();
 			break;
 	}
+	$_SESSION['tip_rz'] = $tip;
 			$r = $db->prepare("SELECT a.id_rz, z.nazvanie FROM arsenal a INNER JOIN zadania z ON a.id_rz = z.id WHERE a.id_user = ? and z.tip = ? ORDER BY id_rz");
 			$r->bind_param('is', $_SESSION['id'], $tip);
 			$r->execute();
@@ -532,33 +541,14 @@ if (isset($_REQUEST['otvet'])) {
 // ------------------------------------------------------------------
 // Обработчик запросов на проверку огня противника
 if (isset($_REQUEST['fire2'])) {
-	// Считаем время до конца боя
-	// print_r($_SESSION['id_fight']);
 	if (isset($_SESSION['id_fight'])) {
 		$_SESSION['t'] = $_SESSION['time_begin'] + $_SESSION['duration']*60 - time();
 		// echo "work";
 		if ($_SESSION['t'] < 0) {
-			// делаем записи в таблице о ничьей
-			// сЛОЖНЫЙ запрос проверяющий кто мы пиглашающий или приглоашаемый и ставящий правильно в очередь нас
-
-
-			// $m = "INSERT INTO queue SET
-			//  id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ?),
-			// id_prigloshaemogo = (SELECT id_prigloshaemogo FROM fight WHERE id_fight = ?),
-			// status = 'nichya', 
-			// customer = 'tr_js',
-			// customer_id =?
-			//  ";
-			//  $r = $db -> prepare($m);
-			//  $r -> bind_param('iis', $_SESSION['id_fight'], $_SESSION['id_fight'], $_SESSION['id']);
-			//  $r -> execute();
-			//  $r -> close();
-			//  $m = "SELECT customer_id, status FROM queue WHERE 
-			//  id_priglos = (SELECT id_priglos FROM fight WHERE id_fight = ".$_SESSION['id_fight'].") and	id_prigloshaemogo = (SELECT id_prigloshaemogo FROM fight WHERE id_fight = ".$_SESSION['id_fight'].")";
 			
-			//  $r = $db -> query($m);
-			// $row = $r -> fetch_array(MYSQL_ASSOC);
-			//  echo $row['customer_id']."_".$row['status'];
+
+
+			
 
 			$m = "INSERT INTO queue_vin SET id_fight = ?, id_vinner = ?";
 			$r = $db -> prepare($m);
@@ -657,7 +647,7 @@ if (isset($_REQUEST['fire2'])) {
 			$r = $db -> prepare($m);
 			$r -> bind_param('i', $_SESSION['id']);
 			$r -> execute();
-			$row = $r -> fetch_array(MYSQL_ASSOC);
+			// $row = $r -> fetch_array(MYSQL_ASSOC);
 			$r -> close();
 			// mysql_qw($m, $_SESSION['id']) or die(mysql_error());
 			if ($row['rez'] == 1) {
@@ -670,15 +660,17 @@ if (isset($_REQUEST['fire2'])) {
 				// $row = mysql_fetch_assoc($r);
 				$_SESSION['enemy_count'] = $row['count'];
 				// -----------------------------------------------------
-				$str = '<p>Ваш щит</p>';
-				$m = 'SELECT * FROM shield WHERE id_user = '.$_SESSION['id'];
+				$str = 'Ваш щит';
+				// $m = 'SELECT * FROM shield WHERE id_user = '.$_SESSION['id'];
+				$m = 'SELECT z.nazvanie FROM shield s INNER JOIN zadania z ON s.id_zsh = z.id WHERE s.id_user = '.$_SESSION['id'];
 				$r = $db -> query($m);
 				// $r = mysql_qw($m, $_SESSION['id']) or die(mysql_error());
 				$j = 0;
-				for ($data2 = array(); $row2 = fetch_array(MYSQL_ASSOC) ; $data2[] = $row2) { 
-					$str = $str."<p>".$row2['nazvanie_zsh']."</p>";
+				for ($data2 = array(); $row2 = $r -> fetch_array(MYSQL_ASSOC) ; $data2[] = $row2) { 
+					$str = $str."<p>".$row2['nazvanie']."</p>";
 					$j++;
 				};
+				$r -> close();
 				if ($j == 0) {
 					$str = "Вы проиграли.";
 					$_SESSION['id_fight'] = null;
@@ -720,12 +712,21 @@ if (isset($_REQUEST['begin'])) {
 }
 // Обработчики для game_js.js
 if (isset($_REQUEST['show_z'])) {
-	$show_z = $db->prepare("SELECT nazvanie, soderjanie FROM zadania WHERE id = ?");
+	$show_z = $db->prepare("SELECT nazvanie, soderjanie, otvet, img FROM zadania WHERE id = ?");
 	$show_z->bind_param('i', $_REQUEST['show_z']);
 	$show_z->execute();
-	$show_z->bind_result($nazvanie, $soderjanie);
+	$show_z->bind_result($nazvanie, $soderjanie, $otvet, $img);
 	$show_z->fetch();
-	echo $nazvanie."<br>".$soderjanie;
+	// echo $nazvanie."<br>".$soderjanie;
+	$m1 = "<p>Задание: ".$nazvanie."</p><p>".$soderjanie."</p>";
+	$m3 = "<p><img src = 'imag/".$img."'></p><p>Ответ: ".$otvet."</p>";
+	$m = $m1.$m3;
+	echo $m;
+
+
+
+
+
 	$show_z->close();
 
 	// $m = 'SELECT soderjanie FROM zadania WHERE id = ?';
@@ -1039,40 +1040,35 @@ elseif($_REQUEST['ready_f'] == 0){
 		$_SESSION['readiness'] = $row['readiness'];
 };
 };
-//Новый код
 
 
-//-----------------
-
-
-//исправляем до сюда
-// --------------------------
-// функция для решения задачи из базы удалить после начала работы index.php
-// if (isset($_REQUEST['show_nz'])) {
-// 	$_SESSION['id_z'] = $_REQUEST['show_nz'];
-// 	$m = "SELECT * FROM zadania WHERE id = ?";
-// 	$r = mysql_qw($m, $_REQUEST['show_nz']);
-// 	$row = mysql_fetch_assoc($r);
-// 	$m1 = "<p>Задание: ".$row['nazvanie']."</p><p>".$row['soderjanie']."</p>";
-// 	$m2 = "
-// 		<input type = 'text' id = 'otvet'><br>
-// 		<input type='hidden' name = 'id_z' id = 'nomer_z' value = 'sdf'>важно
-// 		<input type = 'button' onclick = 'check_nr()' value='Ответить'><br>
-// 	";
-// 	// if (isset($row['img'])) {			
-// 	$m3 = "<p><img src = 'imag/".$row['img']."'></p>";
-// 	$m4 = $m1.$m3.$m2;
-// 	echo $m4;
-// 	// }
-// };
 
 if (isset($_REQUEST['show_nz'])) {
-	$zadania = $db->prepare("SELECT id, nazvanie, soderjanie, img FROM zadania WHERE id = ?");
+	// Считаем число попыток решить данную задачу данным пользователем
+	$vremya = time() - 82800;
+	$r = $db -> prepare('SELECT COUNT(*) FROM attempt_baza WHERE 
+		(id_user = ? and id_zadachi = ?) and vremya > ?
+		');
+	$r -> bind_param('iii', $_SESSION['id'], $_REQUEST['show_nz'], $vremya);
+	$r -> execute();
+	$r -> bind_result($c_attempt);
+	$r -> fetch();
+	$r -> close();	
+	// --------------------------------
+	$zadania = $db->prepare("SELECT id, nazvanie, soderjanie, img, ogranichenie FROM zadania WHERE id = ?");
 	$zadania->bind_param('i', $_REQUEST['show_nz']);
 	$zadania->execute();
-	$zadania->bind_result($id, $nazvanie, $soderjanie, $img);
+	$zadania->bind_result($id, $nazvanie, $soderjanie, $img, $ogranichenie);
 	$zadania->fetch();
-	$m1 = "<p>Задание: ".$nazvanie."</p><p>".$soderjanie."</p>";
+	$ostatok = $ogranichenie - $c_attempt;
+	if ($ostatok > 0) {
+		$ostatok_str = ' (Осталось '.$ostatok.' попыток)';
+	}
+	else{
+		// $t = getdate($ostatok);
+		$ostatok_str = ' (Временно недоступно)';
+	};
+	$m1 = "<p>Задание: ".$nazvanie.$ostatok_str."</p><p>".$soderjanie."</p>";
 	$m2 = "
 		<input type = 'text' id = 'check_nr'><br>
 		<input type = 'hidden' id = 'nomer_z' value = '".$id."'>
@@ -1089,9 +1085,47 @@ if (isset($_REQUEST['show_nz'])) {
 
 if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
 	// Ограничить id доступных заданий
- 	// echo $_SESSION['id'];
+
+ 	// Считаем количество попыток решить данную задачу 
+		$nomer_z = filter_var($_REQUEST['nomer_z'], FILTER_VALIDATE_INT);
+		
+	 	$vremya = time() - 82800;
+	 	$r = $db -> prepare('SELECT COUNT(*) FROM attempt_baza WHERE 
+			(id_user = ? and id_zadachi = ?) and vremya > ?
+			');
+	 	$r -> bind_param('iii', $_SESSION['id'], $nomer_z, $vremya);
+	 	$r -> execute();
+	 	$r -> bind_result($c_attempt);
+	 	$r -> fetch();
+	 	$r -> close();	
+	 	
  	$check_nr = trim($_REQUEST['check_nr']);
- 	$nomer_z = trim($_REQUEST['nomer_z']);
+ 	// $nomer_z = trim($_REQUEST['nomer_z']);
+ 	$vremya = time();
+ 	$r = $db -> prepare('INSERT INTO attempt_baza SET
+			id_user = ?, id_zadachi = ?, vremya = ?
+ 		');
+ 	
+ 	$r -> bind_param('iii', $_SESSION['id'], $nomer_z, $vremya);
+ 	$r -> execute();
+ 	$r -> close();
+ 	// считаем сколько свежих попыток
+ 	$r = $db -> prepare('SELECT ogranichenie FROM zadania WHERE id = ?');
+ 	$r -> bind_param('i', $nomer_z);
+ 	$r -> execute();
+ 	$r -> bind_result($ogranichenie);
+ 	$r -> fetch();
+ 	$r -> close();
+
+ 	$ostatok = $ogranichenie - $c_attempt;
+ 	$message2 = $ostatok;
+ 	if ($ostatok < 1) {
+ 		$message = "Доступные попытки завершились ожидайте их восстановления.".$ogranichenie."-".$c_attempt;
+ 		die(json_encode(array("message" => $message, "message2" => $message2)));
+
+ 	};
+ 	// --------------------------------------
+
  	$proverka = $db->prepare("SELECT id_rz FROM arsenal WHERE id_rz = ? and id_user = ?");
  	$proverka->bind_param('ii', $nomer_z, $_SESSION['id']);
  	$proverka->execute();
@@ -1100,6 +1134,7 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  		$i++;
  	};
  	$proverka->close();
+
 // echo $check_nr." ".$nomer_z;
  	if ($i == 0) {
  		// echo "string2";
@@ -1107,6 +1142,7 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  		$otvet->bind_param('is', $nomer_z, $check_nr);
  		$otvet->execute();
  		$otvet->bind_result($id_rz, $nazvanie);
+ 		
  		$i = 0;
  		while ($otvet->fetch()) {
  			$i++;
@@ -1129,7 +1165,7 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  		}
  		else{
  			$message = "<p>Неверно</p>";
- 			echo json_encode(array("message" => $message));
+ 			echo json_encode(array("message" => $message, "message2" => $message2));
  			
  		}
  	}
@@ -1288,4 +1324,73 @@ if (isset($_REQUEST['nomer_z']) and isset($_REQUEST['check_nr'])) {
  	echo json_encode(array("i" => $i));
  };
  // -------------------------------
+ // функция для переключения страниц
+ if (isset($_REQUEST['listanie'])) {
+ 	// print_r($_SESSION['tip_nz']);
+ 	$multipl = 12;
+ 	
+ 	// Считаем сколько страниц
+ 	$r = $db -> prepare('SELECT COUNT(*) FROM zadania WHERE tip = ?');
+ 	$r -> bind_param('s', $_SESSION['tip_nz']);
+ 	$r -> execute();
+ 	$r -> bind_result($c_tip);
+ 	$r -> fetch();
+ 	$r -> close();
+ 	$mod = $c_tip % 12;
+ 	$div = floor($c_tip/$multipl);
+ 	if ($mod>0) {
+ 		$div++;
+ 	};
+
+
+
+ 	// ----------------------
+ 	$l = filter_var($_REQUEST['listanie'], FILTER_SANITIZE_SPECIAL_CHARS);
+ 	if (($l === 'left_list') and ($_SESSION['stranica'] == 1)) {
+ 		$_SESSION['stranica'] = 1;
+ 	}
+ 	elseif (($l === 'left_list') and ($_SESSION['stranica'] > 1)) {
+ 		$_SESSION['stranica']--;
+ 	}
+ 	elseif (($l == 'rightwards_list') and ($div == $_SESSION['stranica'])) {
+ 	}
+ 	elseif (($l == 'rightwards_list') and ($div > $_SESSION['stranica'])) {
+ 		$_SESSION['stranica']++;
+ 	};
+ 	$sup = $multipl*$_SESSION['stranica'];
+ 	$inf = $sup - $multipl;
+ 	$sup--;
+ 	// echo "inf=".$inf." sup=".$sup;
+ 	// помещаем все задания в массив
+ 	$a = array();
+ 	$r = $db -> prepare('SELECT id_rz FROM arsenal WHERE id_user = ?');
+ 	$r -> bind_param('i', $_SESSION['id']);
+ 	$r -> execute();
+ 	$r -> bind_result($id_rz);
+ 	while ($r -> fetch()) {
+ 		$a[] = $id_rz;
+ 	};
+ 	$r -> close();
+
+ 	$r = $db -> prepare('SELECT id, nazvanie FROM zadania WHERE tip = ? and razdel = ? ORDER BY id');
+ 	$r -> bind_param('ss', $_SESSION['tip_nz'], $_SESSION['razdel']);
+ 	$r -> execute();
+ 	$r -> bind_result($id, $nazvanie);
+ 	$m = '';
+ 	$i = 0;
+ 	while ($r -> fetch()) {
+ 		$datchik = array_search($id, $a);
+ 		if ($datchik === false) {
+ 			if (($i >= $inf) and ($i<=$sup)) {
+ 				$m = $m."<p class = my_sh onmousedown = show_nz(".$id.")>".$nazvanie."</p>";
+ 			};
+ 			$i++;
+ 		}
+ 	};
+ 	$m = "<div id = 'pole_zadanii_cont'>".$m."</div><div class = 'listanie' id = 'left_list'></div><div id = 'stranica'><p id = 'str'>".$_SESSION['stranica']."</p></div><div class = 'listanie' id = 'rightwards_list'></div>";
+ 	echo json_encode(array("m" => $m, "str" => $_SESSION['stranica']));
+ 	// echo $m;
+ 	// -------------------------------
+ };
+ // --------------------------
 ?>

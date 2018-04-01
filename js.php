@@ -21,7 +21,7 @@ function ses_del()
 	$_SESSION['slojnost'] = null;
 	$_SESSION['enemy_shield_name'] = null;
 };
-//Обработчик выбора заданий проверяет наличие врага
+//Обработчик выбора заданий проверяет наличие врага привет
 if (isset($_REQUEST['enemy_shield'])) {
 	// Можно усовершенствовать
 	// сделать проверку не пуст ли enemy_shield

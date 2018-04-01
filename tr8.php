@@ -1,4 +1,5 @@
 <?php
+// hellogit
 var $admin
 define('proverka', 84);
 // require_once "connect2.php";

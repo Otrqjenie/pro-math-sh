@@ -95,7 +95,7 @@ if (isset($_SESSION['enemy'])) {
 				$_SESSION['result'] = null;
 			};
 		};
-		// Проверка наличия текущего боя
+		// Проверка наличия текущего боя 
 		if (!isset($_SESSION['myarsenal'])) {
 			// $m = 'SELECT * FROM arsenal WHERE id_user = ?';
 			if ($r = $db->prepare('SELECT * FROM arsenal WHERE id_user = ?')) {

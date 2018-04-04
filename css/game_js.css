@@ -41,7 +41,7 @@
 	width: 240px;
 	height: 250px;
 	/*background-color: #B0C4DE;*/
-	background-image: url( http://new/imag/sh1.png);
+	background-image: url('../imag/sh1.png');
 	background-size: 100% 100%;
 	/*border-radius: 10px;*/
 }
@@ -385,7 +385,7 @@
 	left: 11px;
 	height: 30px;
 	width: 40px;
-	background-image: url( http://new/imag/left.png);
+	background-image: url('../imag/left.png');
 	background-size: 100% 100%;
 	/*background-color: green;*/
 	cursor: pointer;
@@ -406,7 +406,7 @@
 	left: 99px;
 	height: 30px;
 	width: 40px;
-	background-image: url( http://new/imag/right.png);
+	background-image: url('../imag/right.png');
 	background-size: 100% 100%;
 	/*background-color: green;*/
 }
